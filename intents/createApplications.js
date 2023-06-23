@@ -7,7 +7,6 @@ const createApplications = async (res, queryResult, user_id) => {
     location,
     worktype,
   } = queryResult.outputContexts[1].parameters;
-
   const appRef = db.collection("applications").doc(user_id);
   const userRef = db.collection("users").doc(user_id);
   const result = await appRef.get();
@@ -26,7 +25,7 @@ const createApplications = async (res, queryResult, user_id) => {
           1
         )
           .toString()
-          .padStart(8, "0")
+          .padStart(6, "0")
           .replace(/(\d{2})(\d{2})(\d{2})/, "$1-$2-$3")
       : "00-00-01";
 
@@ -43,8 +42,7 @@ const createApplications = async (res, queryResult, user_id) => {
 
   if (requestBody) {
     await appRef.set(requestBody);
-    console.log("зДЕСЬ");
-    res.send({ fullFillmentText: "Ваша заявка отправлена" });
+    res.send({ fulfillmentText: "Ваша заявка отправлена" });
   } else {
     res.status(500).send("Ошибка создания заявки, повторите позже");
   }
