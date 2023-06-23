@@ -7,7 +7,7 @@ const createApplications = async (res, queryResult, user_id) => {
     location,
     worktype,
   } = queryResult.outputContexts[1].parameters;
-  console.log(queryResult.outputContexts[1].parameters);
+
   const appRef = db.collection("applications").doc(user_id);
   const userRef = db.collection("users").doc(user_id);
   const result = await appRef.get();
@@ -43,9 +43,11 @@ const createApplications = async (res, queryResult, user_id) => {
 
   if (requestBody) {
     await appRef.set(requestBody);
-
+    console.log("зДЕСЬ");
     res.send({ fullFillmentText: "Ваша заявка отправлена" });
-  } else res.status(500).send("Ошибка создания заявки, повторите позже");
+  } else {
+    res.status(500).send("Ошибка создания заявки, повторите позже");
+  }
 };
 
 module.exports = createApplications;

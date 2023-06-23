@@ -1,7 +1,7 @@
 const { db } = require("../firebase");
 
 const correctnumber = async (res, queryResult, user_id) => {
-  const number = queryResult.outputContexts[0].parameters["phone-number"];
+  const number = queryResult.outputContexts[2].parameters["phone-number"];
   let digitsOnly = number.replace(/\D/g, "");
 
   if (digitsOnly.length === 10) {

@@ -13,7 +13,6 @@ dialogFlowrouter.post("/", async (req, res) => {
   const user_id = session.split("/").pop();
 
   const intentName = queryResult.intent.displayName;
-  console.log(intentName);
   if (intentName === "get_applications") {
     await getApplications(res, user_id);
   }
