@@ -3,16 +3,19 @@ const { db } = require("../firebase");
 
 const createApplications = async (res, queryResult, user_id) => {
   const {
-    "reason.original": reason,
+    "worktype.original": reason,
     location,
     worktype,
+    description = "",
   } = queryResult.outputContexts[1].parameters;
+
   const appRef = db.collection("applications").doc(user_id);
   const userRef = db.collection("users").doc(user_id);
   const result = await appRef.get();
   const result1 = await userRef.get();
 
   if (!result.exists && !result1.exists) {
+    console.log("400");
     return res.sendStatus(400);
   }
   const app = await result.data();
@@ -34,14 +37,14 @@ const createApplications = async (res, queryResult, user_id) => {
       reason: reason,
       address: user.address,
       worktype: worktype,
-      description: "",
       location: location,
+      description: description,
       status: "1",
     },
   };
 
   if (requestBody) {
-    await appRef.set(requestBody);
+    await appRef.update(requestBody);
     res.send({ fulfillmentText: "Ваша заявка отправлена" });
   } else {
     res.status(500).send("Ошибка создания заявки, повторите позже");

@@ -25,7 +25,10 @@ dialogFlowrouter.post("/", async (req, res) => {
   if (intentName === "checkagain") {
     checkuser(res, queryResult);
   }
-  if (intentName === "create_applications1") {
+  if (intentName === "create_applications - yes - custom") {
+    await createApplications(res, queryResult, user_id);
+  }
+  if (intentName === "create_applications - no") {
     await createApplications(res, queryResult, user_id);
   }
 });
