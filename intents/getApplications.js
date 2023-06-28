@@ -1,5 +1,5 @@
 const { db } = require("../firebase");
-
+const {STATUS} = require("../constants/constants");
 const getApplications = async (res, user_id) => {
   const appRef = db.collection("applications").doc(user_id);
   const result = await appRef.get();
@@ -7,12 +7,10 @@ const getApplications = async (res, user_id) => {
   if (!result.exists) {
     return res.sendStatus(400);
   }
-
   const responses = Object.entries(result.data()).map(
     ([key, value]) =>
-      `Заявка: ${key}, по адресу: ${value.address}, cтатус ${value.status}.`
+      `Заявка: ${key}, по адресу: ${value.address}, cтатус \"${ STATUS.find(item => item.key === value.status)?.value}\".`
   );
-
   const fulfillmentText = responses.join("\n");
   res.send({ fulfillmentText });
 };
