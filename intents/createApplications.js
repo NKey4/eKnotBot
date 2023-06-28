@@ -45,7 +45,7 @@ const createApplications = async (res, queryResult, user_id) => {
 
   if (requestBody) {
     await appRef.update(requestBody);
-    res.send({ fulfillmentText: "Ваша заявка отправлена" });
+    res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
   } else {
     res.status(500).send("Ошибка создания заявки, повторите позже");
   }
