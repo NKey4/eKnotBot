@@ -11,16 +11,13 @@ const create_applications = async (res, queryResult, user_id) => {
 
   const appRef = db.collection("applications").doc(user_id);
   const userRef = db.collection("users").doc(user_id);
-  const result = await appRef.get();
-  const result1 = await userRef.get();
+  const [app, user] = await Promise.all([appRef.get(), userRef.get()]);
 
-  if (!result.exists && !result1.exists) {
-    console.log("400");
+  if (!app.exists && !user.exists) {
     return res.sendStatus(400);
   }
-  const app = await result.data();
-  const user = await result1.data();
-  const data = Object.keys(app);
+
+  const data = Object.keys(app.data());
   const newId =
     data.length > 0
       ? (
@@ -34,11 +31,11 @@ const create_applications = async (res, queryResult, user_id) => {
 
   const requestBody = {
     [newId]: {
-      reason: reason,
-      address: user.address,
-      worktype: worktype,
-      location: location,
-      description: description,
+      reason,
+      address: user.data().address,
+      worktype,
+      location,
+      description,
       status: "1",
     },
   };
@@ -47,7 +44,7 @@ const create_applications = async (res, queryResult, user_id) => {
     await appRef.update(requestBody);
     res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
   } else {
-    res.status(500).send("Ошибка создания заявки, повторите позже");
+    res.send({ fulfillmentText: "Ошибка создания заявки, повторите позже" });
   }
 };
 

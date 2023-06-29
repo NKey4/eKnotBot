@@ -14,7 +14,7 @@ const get_weather = async (res, queryResult, user_id) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Ошибка предоставления информации о температуре");
+    res.send("Ошибка предоставления информации о температуре");
   }
 };
 
