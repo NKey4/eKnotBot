@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { db } = require("../firebase");
 
-const createApplications = async (res, queryResult, user_id) => {
+const create_applications = async (res, queryResult, user_id) => {
   const {
     "worktype.original": reason,
     location,
@@ -51,4 +51,4 @@ const createApplications = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = createApplications;
+module.exports = create_applications;

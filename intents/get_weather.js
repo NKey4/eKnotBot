@@ -1,7 +1,7 @@
 const axios = require("axios");
 require("dotenv").config();
 
-const getweather = async (res, queryResult) => {
+const get_weather = async (res, queryResult, user_id) => {
   const { "geo-city": city } = queryResult.parameters;
 
   try {
@@ -18,4 +18,4 @@ const getweather = async (res, queryResult) => {
   }
 };
 
-module.exports = getweather;
+module.exports = get_weather;

@@ -2,34 +2,23 @@ const express = require("express");
 const dialogFlowrouter = express.Router();
 require("dotenv").config();
 
-const getApplications = require("../intents/getApplications");
-const checkuser = require("../intents/checkuser");
-const createApplications = require("../intents/createApplications");
-const correctnumber = require("../intents/correctnumber");
+const intents = {
+  get_applications: require("../intents/get_applications"),
+  check_user: require("../intents/check_user"),
+  create_applications: require("../intents/create_applications"),
+  correct_number: require("../intents/correct_number"),
+  get_debt: require("../intents/get_debt"),
+};
 
 dialogFlowrouter.post("/", async (req, res) => {
-  const { queryResult } = req.body;
-  const { session } = req.body;
+  const { queryResult, session } = req.body;
   const user_id = session.split("/").pop();
-
   const intentName = queryResult.intent.displayName;
-  if (intentName === "get_applications") {
-    await getApplications(res, user_id);
-  }
-  if (intentName === "correctnumber") {
-    await correctnumber(res, queryResult, user_id);
-  }
-  if (intentName === "checkuser") {
-    checkuser(res, queryResult);
-  }
-  if (intentName === "checkagain") {
-    checkuser(res, queryResult);
-  }
-  if (intentName === "create_applications - yes - custom") {
-    await createApplications(res, queryResult, user_id);
-  }
-  if (intentName === "create_applications - no") {
-    await createApplications(res, queryResult, user_id);
+
+  if (intents[intentName]) {
+    await intents[intentName](res, queryResult, user_id);
+  } else if (["checkuser", "checkagain"].includes(intentName)) {
+    intents.check_user(res, queryResult, user_id);
   }
 });
 

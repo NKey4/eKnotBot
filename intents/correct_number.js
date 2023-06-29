@@ -1,16 +1,22 @@
 const { db } = require("../firebase");
 
-const correctnumber = async (res, queryResult, user_id) => {
+const correct_number = async (res, queryResult, user_id) => {
   const number = queryResult.outputContexts[2].parameters["phone-number"];
   let digitsOnly = number.replace(/\D/g, "");
 
   if (digitsOnly.length === 10) {
-    digitsOnly = `+7 ${digitsOnly.slice(0, 3)} ${digitsOnly.slice(
-      3,
-      6
-    )} ${digitsOnly.slice(6, 8)} ${digitsOnly.slice(8)}`;
+    digitsOnly = digitsOnly.replace(
+      /(\d{3})(\d{3})(\d{2})(\d{2})/,
+      "+7 $1 $2 $3 $4"
+    );
   } else if (digitsOnly.length === 11 && /^[78]/.test(digitsOnly)) {
-    digitsOnly = `+7 ${digitsOnly.slice(1, 4)} ${digitsOnly.slice(4,7)} ${digitsOnly.slice(7, 9)} ${digitsOnly.slice(9)}`;
+    digitsOnly = digitsOnly.replace(
+      /(\d)(\d{3})(\d{3})(\d{2})(\d{2})/,
+      "+7 $2 $3 $4 $5"
+    );
+  } else {
+    res.send({ fulfillmentText: "Некорректный номер телефона." });
+    return;
   }
 
   const userRef = db.collection("users").doc(user_id);
@@ -22,4 +28,4 @@ const correctnumber = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = correctnumber;
+module.exports = correct_number;
