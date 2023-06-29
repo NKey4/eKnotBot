@@ -1,6 +1,6 @@
 const check_user = async (res, queryResult, user_id) => {
   const number = queryResult.outputContexts[0].parameters["phone-number"];
-  const code = queryResult.outputContexts[0].parameters["code"];
+  const cod = queryResult.outputContexts[0].parameters["code"];
   let digitsOnly = number.replace(/\D/g, "");
 
   if (digitsOnly.length === 10) {
