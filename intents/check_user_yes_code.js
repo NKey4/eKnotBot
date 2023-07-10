@@ -17,7 +17,14 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     user.data().phoneNumber === digitsOnly &&
     code === "7777"
   ) {
-    res.send({ fulfillmentText: `С возвращением, ${user.data().name}` });
+    const context = {
+      name: 'projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck',
+      lifespanCount: 100,
+      parameters: {
+        flag: 'true',
+      }
+    };
+  res.send({fulfillmentText: `Приветствую Вас, ${user.data().name}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите \"Помощь\".`, outputContexts: [context] });
   } else {
     res.send({
       fulfillmentText: `Вы ввели неправильный номер телефона или код, введите всё заново`,
