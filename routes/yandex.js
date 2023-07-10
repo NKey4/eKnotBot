@@ -42,7 +42,7 @@ alice.command("", async (req) => {
 });
 
 alice.any(async (ctx) => {
-  return Reply.text(await detectIntent(ctx.originalUtterance, ctx.userId));
+  return Reply.text(await detectIntent(ctx.originalUtterance, ctx.data.session.user.user_id));
 });
 
 module.exports = aliceRouter;
