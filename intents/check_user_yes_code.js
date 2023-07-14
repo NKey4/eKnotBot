@@ -4,18 +4,14 @@ const { format_number } = require("../intents/format_number");
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
 
-  const digitsOnly = format_number(phoneNumber);
-
-  if (digitsOnly === null) {
-    res.send({ fulfillmentText: "Некорректный номер телефона." });
-    return;
-  }
+  const digitsOnlyPhoneNum = format_number(phoneNumber);
+  const digitsOnlyCode = format_code(code);
 
   const user = await db.collection("users").doc(user_id).get();
   if (
     user.exists &&
-    user.data().phoneNumber === digitsOnly &&
-    code === "7777"
+    user.data().phoneNumber === digitsOnlyPhoneNum &&
+    digitsOnlyCode === "7777"
   ) {
     const context = {
       name: 'projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck',
@@ -29,6 +25,16 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     res.send({
       fulfillmentText: `Вы ввели неправильный номер телефона или код, введите всё заново`,
     });
+  }
+};
+
+const format_code = (number) => {
+  let digitsOnly = number.replace(/\D/g, "");
+  console.log(digitsOnly);
+  if (digitsOnly.length !== 4) {
+    return null;
+  } else{
+    return digitsOnly;
   }
 };
 

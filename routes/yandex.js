@@ -9,7 +9,9 @@ aliceRouter.post("/", async (req, res) => {
   res.json(jsonAnswer);
 });
 
-alice.command("", async (req) => {
+const welcomeMatcher = ctx => ctx.data.session.new ===true;
+
+alice.command(welcomeMatcher, async (req) => {
   let link;
   let buttonText;
 
@@ -42,7 +44,7 @@ alice.command("", async (req) => {
 });
 
 alice.any(async (ctx) => {
-  return Reply.text(await detectIntent(ctx.originalUtterance, ctx.data.session.user.user_id));
+  return Reply.text(await detectIntent(ctx.message, ctx.data.session.user.user_id));
 });
 
 module.exports = aliceRouter;
