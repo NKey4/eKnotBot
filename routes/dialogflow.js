@@ -10,6 +10,7 @@ const intents = {
   check_user_yes_code: require("../intents/check_user_yes_code"),
   get_debt: require("../intents/get_debt"),
   application: require("../intents/application"),
+  delete_applications_select_number_yes: require("../intents/delete_applications"),
 };
 
 dialogFlowrouter.post("/", async (req, res) => {

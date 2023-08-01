@@ -25,9 +25,9 @@ const create_applications = async (res, queryResult, user_id) => {
           1
         )
           .toString()
-          .padStart(6, "0")
-          .replace(/(\d{2})(\d{2})(\d{2})/, "$1-$2-$3")
-      : "00-00-01";
+          .padStart(4, "0")
+          .replace(/(\d{2})(\d{2})/, "$1-$2")
+      : "00-01";
 
   const requestBody = {
     [newId]: {
