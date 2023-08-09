@@ -9,4 +9,4 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/", aliceRouter);
 app.use("/webhook", dialogFlowrouter);
 
-app.listen(3000, () => console.log("Сервер запущен на 3000"));
+app.listen(3000, () => console.log("Сервер запущен на 3000 порту"));
