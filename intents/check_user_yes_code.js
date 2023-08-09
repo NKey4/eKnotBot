@@ -6,13 +6,21 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
 
   const digitsOnlyPhoneNum = format_number(phoneNumber);
   const digitsOnlyCode = format_code(code);
-
-  const user = await db.collection("users").doc(user_id).get();
+  const userRef = db.collection("users").doc(user_id);
+  const user = await userRef.get();
+  console.log(user.data()["entryDate"]);
   if (
     user.exists &&
     user.data().phoneNumber === digitsOnlyPhoneNum &&
     digitsOnlyCode === "7777"
   ) {
+
+    const updateData = {};
+    const currentDate = new Date();
+    console.log(currentDate.getTime());
+    updateData['entryDate'] = currentDate;
+    userRef.update(updateData);
+
     const context = {
       name: 'projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck',
       lifespanCount: 100,
