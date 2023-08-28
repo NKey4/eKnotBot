@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { db } = require("../firebase");
+const { usual_number } = require("../intents/format_number");
 
 const create_applications = async (res, queryResult, user_id) => {
   const {
@@ -18,7 +19,7 @@ const create_applications = async (res, queryResult, user_id) => {
   }
 
   const data = Object.keys(app.data());
-  const newId =
+  let newId =
     data.length > 0
       ? (
           Math.max(...data.map((item) => parseInt(item.split("-").join("")))) +
@@ -37,9 +38,10 @@ const create_applications = async (res, queryResult, user_id) => {
       location,
       description,
       status: "1",
+      viewing: "0",
     },
   };
-
+  newId=usual_number(newId);
   if (requestBody) {
     await appRef.update(requestBody);
     res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });

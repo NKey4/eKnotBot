@@ -1,5 +1,6 @@
 const { db } = require("../firebase");
 const { STATUS } = require("../constants/constants");
+const { usual_number } = require("../intents/format_number");
 
 const get_one_application = async (res, queryResult, user_id) => {
   const appRef = db.collection("applications").doc(user_id);
@@ -16,10 +17,11 @@ const get_one_application = async (res, queryResult, user_id) => {
 
   let fulfillmentText = "";
 
-  for (const [key, value] of Object.entries(result.data())) {
-    if (value.status === status) {
+  for (let [key, value] of Object.entries(result.data())) {
+    if (value.status === status && value.viewing === "0") {
+      key = usual_number(key);
       const address = value.address.join(", ");
-      fulfillmentText += `Заявка: ${key}, Статус: ${statusValue}, Адрес: ${address}\n`;
+      fulfillmentText += `Заявка под номером ${key}, со статусом: ${statusValue}, по адресу: ${address}\n`;
     }
   }
 
