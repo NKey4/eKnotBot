@@ -19,7 +19,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     const currentDate = new Date();
     console.log(currentDate.getTime());
     updateData['entryDate'] = currentDate;
-    userRef.update(updateData);
+    await userRef.update(updateData);
 
     const context = {
       name: 'projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck',

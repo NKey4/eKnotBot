@@ -7,6 +7,7 @@ const intents = {
   check_user: require("../intents/check_user"),
   create_applications: require("../intents/create_applications"),
   create_applications_Confirm: require("../intents/create_applications_Confirm"),
+  check_user_yes: require("../intents/check_user_yes"),
   check_user_yes_code: require("../intents/check_user_yes_code"),
   delete_applications_select_number_yes: require("../intents/delete_applications"),
   get_debt: require("../intents/get_debt"),
