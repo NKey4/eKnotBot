@@ -1,55 +1,59 @@
-const { db } = require("../firebase");
 const { format_number } = require("../intents/format_number");
+const axios = require("axios");
+const User = require("../models/user");
+require("dotenv").config();
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
-
   const digitsOnlyPhoneNum = format_number(phoneNumber);
   const digitsOnlyCode = format_code(code);
-  const userRef = db.collection("users").doc(user_id);
-  const user = await userRef.get();
-  let eknotdata = "";
-  try{
+
+  try {
     const data = {
-      yandexId: user_id,
-      code: digitsOnlyCode,
-      phoneNumber: digitsOnlyPhoneNum
-  };
-    eknotdata = await axios.post(`${process.env.CONFIRM_CODE_URL}`,data);
-  } catch(error){
-    console.log("Ошибка сервера (check_user_yes)");
+      phoneNumber: "77478084388",
+      code: format_code(code),
+      yandexId: "123",
+    };
+
+    const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
+    console.log(response.data);
+  } catch (error) {
+    console.error("Ошибка сервера (check_user_yes):", error);
     return res.sendStatus(500);
   }
-  console.log(user.data()["entryDate"]);
-  /*if (
-    user.exists &&
-    user.data().phoneNumber === digitsOnlyPhoneNum &&
-    digitsOnlyCode === "7777"
-  ) */
-  const updateData = {};
-  const currentDate = new Date();
-  console.log(currentDate.getTime());
-  updateData['entryDate'] = currentDate;
-  await userRef.update(updateData);
 
-  const context = {
-    name: 'projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck',
-    lifespanCount: 100,
-    parameters: {
-      flag: 'true',
-    }
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: user_id },
+      {
+        phoneNumber: digitsOnlyPhoneNum,
+        entryDate: new Date(),
+      },
+      { upsert: true, new: true }
+    );
+
+    const context = {
+      name: "projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck",
+      lifespanCount: 100,
+      parameters: {
+        flag: "true",
+      },
     };
-  res.send({fulfillmentText: `Приветствую Вас, ${displayName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите \"Помощь\".`, outputContexts: [context] });
+
+    res.send({
+      fulfillmentText: `Приветствую Вас, .\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      outputContexts: [context],
+    });
+  } catch (error) {
+    console.error("Ошибка при обновлении данных пользователя:", error);
+    return res.sendStatus(500);
+  }
 };
 
 const format_code = (number) => {
-  let digitsOnly = number.replace(/\D/g, "");
+  const digitsOnly = number.replace(/\D/g, "");
   console.log(digitsOnly);
-  if (digitsOnly.length !== 4) {
-    return null;
-  } else{
-    return digitsOnly;
-  }
+  return digitsOnly.length === 4 ? digitsOnly : null;
 };
 
 module.exports = check_user_yes_code;

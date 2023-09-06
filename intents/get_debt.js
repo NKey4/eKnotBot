@@ -1,16 +1,32 @@
-const { db } = require("../firebase");
+require("dotenv").config();
+const User = require("../models/user");
 
 const get_debt = async (res, queryResult, user_id) => {
-  const appRef = db.collection("debt").doc(user_id);
-  const result = await appRef.get();
+  try {
+    const user = await User.findOne({ _id: user_id });
 
-  if (!result.exists) {
-    return res.sendStatus(400);
+    if (!user) {
+      return res.sendStatus(400);
+    }
+
+    const debt = user.debt;
+
+    if (debt === undefined || debt === null || debt === "") {
+      res.send({
+        fulfillmentText: "Вы не имеете никакой задолженности.",
+      });
+    } else {
+      res.send({
+        fulfillmentText: `Ваша задолженность на данный момент составляет ${debt} тг`,
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Ошибка при получении данных о задолженности из базы данных:",
+      error
+    );
+    res.send({ fulfillmentText: "Приношу извинения. Ошибка сервера." });
   }
-  const debt = result.data().debt;
-  res.send({
-    fulfillmentText: `Ваша задолженность на данный момент составляет ${debt} тг`,
-  });
 };
 
 module.exports = get_debt;
