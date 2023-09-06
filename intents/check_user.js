@@ -6,10 +6,7 @@ const check_user = async (res, queryResult, user_id) => {
     const number = queryResult.outputContexts[0].parameters["phoneNumber"];
     const digitsOnly = format_number(number);
 
-    // Используйте Mongoose, которое уже подключено в server.js
     const user = await User.findOne({ _id: user_id });
-
-    // ...
   } catch (error) {
     console.error("Ошибка при обращении к базе данных:", error);
     res.sendStatus(500);
