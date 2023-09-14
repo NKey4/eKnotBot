@@ -14,7 +14,6 @@ const detectIntent = async (queryText, user_id) => {
     project_id,
     user_id
   );
-
   const request = {
     session: sessionPath,
     queryInput: {
@@ -26,7 +25,10 @@ const detectIntent = async (queryText, user_id) => {
   };
 
   const [response] = await sessionClient.detectIntent(request);
-  return response.queryResult.fulfillmentText;
+  return {
+    fulfillmentText: response.queryResult.fulfillmentText,
+    intentDisplayName: response.queryResult.intent.displayName,
+  };
 };
 
 module.exports = detectIntent;

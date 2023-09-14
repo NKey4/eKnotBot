@@ -22,16 +22,15 @@ dialogFlowrouter.post("/", async (req, res) => {
   const user_id = session.split("/").pop();
   const intentName = queryResult.intent.displayName;
   console.log(intentName);
-  if (intentName.startsWith("create_applications")) {
-    if(intentName === "create_applications_no"){
-      await intents.create_applications_Confirm(res, queryResult, user_id);
-    }else if(intentName === "create_applications_yes_desc"){
-      await intents.create_applications_Confirm(res, queryResult, user_id);
-    }
-    else{
-      await intents.create_applications(res, queryResult, user_id);
-    }
 
+  if (intentName.startsWith("create_applications")) {
+    const createIntentName =
+      intentName === "create_applications_no" ||
+      intentName === "create_applications_yes_desc"
+        ? "create_applications_Confirm"
+        : "create_applications";
+
+    await intents[createIntentName](res, queryResult, user_id);
   } else if (intents[intentName]) {
     await intents[intentName](res, queryResult, user_id);
   }

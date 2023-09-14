@@ -6,11 +6,10 @@ require("dotenv").config();
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
   const digitsOnlyPhoneNum = format_number(phoneNumber);
-  const digitsOnlyCode = format_code(code);
 
   try {
     const data = {
-      phoneNumber: "77478084388",
+      phoneNumber: digitsOnlyPhoneNum,
       code: format_code(code),
       yandexId: "123",
     };
@@ -24,7 +23,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
 
   try {
     const user = await User.findOneAndUpdate(
-      { _id: user_id },
+      { yandex_id: user_id },
       {
         phoneNumber: digitsOnlyPhoneNum,
         entryDate: new Date(),
@@ -33,7 +32,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     );
 
     const context = {
-      name: "projects/eknot-ktdq/agent/sessions/2CF3B4D976AD447DDAE6BB2C6034CCA533252650FF31791390F00F0DD1D5D821/contexts/logincheck",
+      name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
       lifespanCount: 100,
       parameters: {
         flag: "true",
@@ -41,7 +40,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     };
 
     res.send({
-      fulfillmentText: `Приветствую Вас, .\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `Приветствую Вас, {name}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
       outputContexts: [context],
     });
   } catch (error) {
@@ -52,7 +51,6 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
 
 const format_code = (number) => {
   const digitsOnly = number.replace(/\D/g, "");
-  console.log(digitsOnly);
   return digitsOnly.length === 4 ? digitsOnly : null;
 };
 

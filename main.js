@@ -1,5 +1,6 @@
 const express = require("express");
 const aliceRouter = require("./routes/yandex");
+const aliceRouter1 = require("./routes/yandex-dialogs");
 const dialogFlowrouter = require("./routes/dialogflow");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -19,5 +20,5 @@ mongoose
 
 app.listen(3000, () => console.log("Сервер запущен на 3000 порту"));
 
-app.use("/", aliceRouter);
+app.use("/", aliceRouter1);
 app.use("/webhook", dialogFlowrouter);
