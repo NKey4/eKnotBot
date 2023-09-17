@@ -13,9 +13,9 @@ const check_user_yes = async (res, queryResult, user_id) => {
       { upsert: true, new: true }
     );
 
-    await axios.post(process.env.SEND_CODE_URL, {
-      phoneNumber: format_number(phoneNumber),
-    });
+    // await axios.post(process.env.SEND_CODE_URL, {
+    //   phoneNumber: format_number(phoneNumber),
+    // });
 
     res.send({
       fulfillmentText:

@@ -11,13 +11,13 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     const data = {
       phoneNumber: digitsOnlyPhoneNum,
       code: format_code(code),
-      yandexId: "123",
+      yandexId: user_id,
     };
 
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
     console.log(response.data);
   } catch (error) {
-    console.error("Ошибка сервера (check_user_yes):", error);
+    console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);
   }
 
