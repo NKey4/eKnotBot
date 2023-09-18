@@ -7,8 +7,7 @@ const check_user = async (res, queryResult, user_id) => {
     const number = format_number(
       queryResult.outputContexts[0].parameters["phoneNumber"]
     );
-    const user = await User.findOne({ yandex_id: user_id });
-
+    
     const response = user
       ? { fulfillmentText: `Вы ввели номер ${number}, верно?` }
       : { fulfillmentText: "Некорректный номер телефона." };

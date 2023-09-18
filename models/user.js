@@ -12,6 +12,8 @@ const userSchema = new Schema({
   name: String,
   phoneNumber: { type: String, required: true },
   debt: String,
+}, {
+  versionKey: false
 });
 
 const User = mongoose.model("User", userSchema);

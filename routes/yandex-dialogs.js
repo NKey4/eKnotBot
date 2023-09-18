@@ -25,19 +25,7 @@ aliceRouter.post("/", async (req, res) => {
   const response = { version, session };
   let intentResponse;
   if (!request.original_utterance) {
-    response.response = hello();
-    const newUser = new User({yandex_id: user_id });
-    await User.findOne({ yandex_id: user_id }), (error) => {
-      if (error) {
-        newUser.save((error) => {
-          if (error) {
-            console.error('Ошибка при сохранении пользователя:', error);
-          } else {
-            console.log('Пользователь успешно сохранен');
-          }
-        });
-      } 
-    };
+    response.response = hello(); 
   } else {
     intentResponse = await detectIntent(request.original_utterance, user_id);
     response.response = { text: intentResponse.fulfillmentText };

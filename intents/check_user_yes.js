@@ -7,12 +7,6 @@ const check_user_yes = async (res, queryResult, user_id) => {
   try {
     const { phoneNumber } = queryResult.outputContexts[1].parameters;
 
-    const user = await User.findOneAndUpdate(
-      { yandex_id: user_id },
-      { phoneNumber: format_number(phoneNumber) },
-      { upsert: true, new: true }
-    );
-
     // await axios.post(process.env.SEND_CODE_URL, {
     //   phoneNumber: format_number(phoneNumber),
     // });
