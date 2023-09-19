@@ -20,27 +20,22 @@ const hello = () => ({
 
 aliceRouter.post("/", async (req, res) => {
   const { request, session, version } = req.body;
-
   const { user_id } = session.user;
   const response = { version, session };
   let intentResponse;
   if (!request.original_utterance) {
-    response.response = hello(); 
+    response.response = hello();
   } else {
     intentResponse = await detectIntent(request.original_utterance, user_id);
     response.response = { text: intentResponse.fulfillmentText };
     if (intentResponse.intentDisplayName) {
-      if (
-        intentResponse.intentDisplayName === "Exit" ||
-        intentResponse.intentDisplayName === "check_user_yes_Exit"
-      ) {
+      if (intentResponse.intentDisplayName === "Exit") {
         response.response.end_session = true;
       } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
         response.user_state_update = { value: "123" };
       }
     }
   }
-
   res.json(response);
 });
 
