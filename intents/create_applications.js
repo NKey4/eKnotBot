@@ -17,8 +17,6 @@ const create_applications = async (res, queryResult, user_id) => {
           .padStart(2, "0")}`
       : "00-01";
 
-    console.log(newId);
-
     const newApplication = new Application({
       _id: newId,
       yandex_id: user_id,
