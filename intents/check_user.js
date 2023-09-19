@@ -7,10 +7,8 @@ const check_user = async (res, queryResult, user_id) => {
     const number = format_number(
       queryResult.outputContexts[0].parameters["phoneNumber"]
     );
-    
-    const response = user
-      ? { fulfillmentText: `Вы ввели номер ${number}, верно?` }
-      : { fulfillmentText: "Некорректный номер телефона." };
+
+    const response = { fulfillmentText: `Вы ввели номер ${number}, верно?` };
 
     res.send(response);
   } catch (error) {

@@ -1,39 +1,46 @@
 const { format_number } = require("../intents/format_number");
 const axios = require("axios");
 const User = require("../models/user");
+const { response } = require("express");
 require("dotenv").config();
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
   const digitsOnlyPhoneNum = format_number(phoneNumber);
-
+  const digitsOnly = format_code(code);
+  console.log(digitsOnly);
   try {
     const data = {
       phoneNumber: digitsOnlyPhoneNum,
-      code: format_code(code),
+      code: digitsOnly,
       yandexId: user_id,
     };
 
-    //const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
-    //console.log(response.data);
+    const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);
   }
-   //Необходим метод для получения данных о пользователе (имя, адрес) для дальнейшего записывания в user_state и session_state в Yandex
+  //Необходим метод для получения данных о пользователе (имя, адрес) для дальнейшего записывания в user_state и session_state в Yandex
   try {
     const existingUser = await User.findOne({ yandex_id: user_id });
-  
-    if (!existingUser) {
-      const newUser = new User({ yandex_id: user_id, address: " ", phoneNumber: digitsOnlyPhoneNum, entryDate: new Date()});
-  
-      await newUser.save();
-  
-      console.log('Пользователь успешно сохранен');
-    } else {
-      await existingUser.updateOne({entryDate: new Date()})
 
-      console.log('Пользователь уже существует и время входа обновлено');
+    if (!existingUser) {
+      const newUser = new User({
+        yandex_id: user_id,
+        name: response.data.firstname,
+        address: " ",
+        phoneNumber: digitsOnlyPhoneNum,
+        entryDate: new Date(),
+      });
+
+      await newUser.save();
+
+      console.log("Пользователь успешно сохранен");
+    } else {
+      await existingUser.updateOne({ entryDate: new Date() });
+
+      console.log("Пользователь уже существует и время входа обновлено");
     }
     const context = {
       name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
@@ -43,12 +50,12 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       },
     };
     res.send({
-      fulfillmentText: `Приветствую Вас, {name}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `Приветствую Вас, ${response.data}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
       outputContexts: [context],
     });
   } catch (error) {
-    console.error('Ошибка при поиске/сохранении пользователя:', error);
-  }   
+    console.error("Ошибка при поиске/сохранении пользователя:", error);
+  }
   //Пока что лучше оставить
   /*try {
     const user = await User.findOneAndUpdate(
