@@ -14,7 +14,7 @@ const get_one_application = async (res, queryResult, user_id) => {
     const status = queryResult.outputContexts[0].parameters["status"];
     const statusValue = STATUS.find(
       (status_id) => status_id.key === status
-    )?.value;
+    )?.Name;
 
     let fulfillmentText = "";
 

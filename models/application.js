@@ -4,17 +4,19 @@ const Schema = mongoose.Schema;
 
 const applicationSchema = new Schema(
   {
-    _id: { type: String, required: true },
-    yandex_id: String,
-    location: {
+    _id: { 
+      type: String, 
+      required: true 
+    },
+    yandex_id: {
       type: String,
       required: true,
     },
-    worktype: {
+    location_id: {
       type: String,
       required: true,
     },
-    reason: {
+    worktype_id: {
       type: String,
       required: true,
     },
@@ -22,9 +24,19 @@ const applicationSchema = new Schema(
       type: [String],
       required: true,
     },
-    description: String,
-    status: Number,
-    viewing: Boolean,
+    description: {
+      type: String,
+      required: true,
+    },
+    status_id: {
+      type: String,
+      required: true,
+    },
+    viewing: 
+    {
+      type: Boolean,
+      required: true,
+    },
   },
   {
     versionKey: false,

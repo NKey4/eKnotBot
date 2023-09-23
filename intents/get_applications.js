@@ -12,13 +12,13 @@ const get_applications = async (res, queryResult, user_id) => {
 
     const counts = {};
     applications.forEach((app) => {
-      const count = counts[app.status] || 0;
-      counts[app.status] = count + 1;
+      const count = counts[app.status_id] || 0;
+      counts[app.status_id] = count + 1;
     });
 
     const countText = Object.entries(counts)
-      .map(([status, count]) => {
-        const statusLabel = STATUS.find((item) => item.key === status)?.value;
+      .map(([status_id, count]) => {
+        const statusLabel = STATUS.find((item) => item.key === status_id)?.Name;
         return `Количество заявок со статусом "${statusLabel}": ${count}`;
       })
       .join("\n");

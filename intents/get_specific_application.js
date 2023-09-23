@@ -32,7 +32,7 @@ const get_specific_application = async (res, queryResult, user_id) => {
 
     const statusValue = STATUS.find(
       (status_id) => status_id.key === appResult.status
-    )?.value;
+    )?.Name;
     res.send({ fulfillmentText: `Статус заявки: ${statusValue}` });
   } catch (error) {
     console.error(
