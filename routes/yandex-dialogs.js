@@ -1,4 +1,3 @@
-const User = require("../models/user");
 const axios = require("axios");
 const express = require("express");
 const aliceRouter = express.Router();

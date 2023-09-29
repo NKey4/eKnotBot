@@ -1,12 +1,11 @@
-const { format_number } = require("../intents/format_number");
+const { format_number_to_770 } = require("../intents/format_number");
 const axios = require("axios");
-const User = require("../models/user");
 const { response } = require("express");
 require("dotenv").config();
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
-  const digitsOnlyPhoneNum = format_number(phoneNumber);
+  const digitsOnlyPhoneNum = format_number_to_770(phoneNumber);
   const digitsOnly = format_code(code);
   try {
     const data = {
@@ -14,34 +13,8 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       code: digitsOnly,
       yandexId: "1111",
     };
-
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
     console.log(response.data);
-  } catch (error) {
-    console.error("Ошибка сервера (check_user_yes_code):", error);
-    return res.sendStatus(500);
-  }
-  //Необходим метод для получения данных о пользователе (имя, адрес) для дальнейшего записывания в user_state и session_state в Yandex
-  try {
-    const existingUser = await User.findOne({ yandex_id: user_id });
-
-    if (!existingUser) {
-      const newUser = new User({
-        yandex_id: user_id,
-        name: response.data.firstname,
-        address: " ",
-        phoneNumber: digitsOnlyPhoneNum,
-        entryDate: new Date(),
-      });
-
-      await newUser.save();
-
-      console.log("Пользователь успешно сохранен");
-    } else {
-      await existingUser.updateOne({ entryDate: new Date() });
-
-      console.log("Пользователь уже существует и время входа обновлено");
-    }
     const context = {
       name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
       lifespanCount: 100,
@@ -54,22 +27,9 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       outputContexts: [context],
     });
   } catch (error) {
-    console.error("Ошибка при поиске/сохранении пользователя:", error);
-  }
-  //Пока что лучше оставить
-  /*try {
-    const user = await User.findOneAndUpdate(
-      { yandex_id: user_id },
-      {
-        phoneNumber: digitsOnlyPhoneNum,
-        entryDate: new Date(),
-      },
-      { upsert: true, new: true }
-    );
-  } catch (error) {
-    console.error("Ошибка при обновлении данных пользователя:", error);
+    console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);
-  }*/
+  }
 };
 
 const format_code = (number) => {

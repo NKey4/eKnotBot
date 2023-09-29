@@ -1,5 +1,4 @@
 require("dotenv").config();
-const User = require("../models/user");
 
 const get_debt = async (res, queryResult, user_id) => {
   try {
