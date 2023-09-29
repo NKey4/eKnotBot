@@ -1,5 +1,5 @@
 const User = require("../models/user");
-
+const axios = require("axios");
 const express = require("express");
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
@@ -32,7 +32,15 @@ aliceRouter.post("/", async (req, res) => {
       if (intentResponse.intentDisplayName === "Exit") {
         response.response.end_session = true;
       } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
-        response.user_state_update = { value: "123" };
+        try {
+          const respon = await axios.get(process.env.GET_ADDRESS_URL, {
+            params: user_id,
+          });
+          response.session_state = { address: respon.data };
+        } catch (error) {
+          console.error(error);
+          return res.sendStatus(500);
+        }
       }
     }
   }

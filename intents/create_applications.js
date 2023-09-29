@@ -1,5 +1,4 @@
 const Application = require("../models/application");
-const { format_number } = require("../intents/format_number");
 const { STATUS, WORKTYPE, LOCATION } = require("../constants/constants");
 
 const create_applications = async (res, queryResult, user_id) => {
@@ -17,40 +16,44 @@ const create_applications = async (res, queryResult, user_id) => {
           .toString()
           .padStart(2, "0")}`
       : "00-01";
-    if(description === ""){
+    if (description === "") {
       description = reason;
     }
-    /*const newApplication = new Application({
-      _id: newId,
-      yandex_id: user_id,
-      reason,
-      location,
-      worktype,
-      description,
-      status: "1",
-      viewing: "0",
-    });*/
+
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const location_id = LOCATION.find((item) => item.Name === location)?.oid;
     const worktype_id = WORKTYPE.find((item) => item.Name === worktype)?.oid;
 
     const newApplication = new Application({
       _id: newId,
-      yandex_id: user_id,
-      location_id,
-      worktype_id,
-      //Добавить адрес 
-      description,
-      status_id,
-      viewing: "0",
+      yandexId: user_id,
+      apartmentId,
+      requestLocationId: location_id,
+      requestCategoryId: worktype_id,
+      requestSubCategoryId,
+      dataMessage,
+      userMessage,
     });
 
     await newApplication.save();
-
-    if (newApplication) {
-      res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
-    } else {
-      res.send({ fulfillmentText: "Ошибка создания заявки, повторите позже" });
+    try {
+      const applicationToSend = { ...newApplication };
+      delete applicationToSend._id;
+      const response = await axios.post(
+        process.env.CREATE_APPLICATION_URL,
+        applicationToSend
+      );
+      if (newApplication) {
+        res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
+      } else {
+        res.send({
+          fulfillmentText: "Ошибка создания заявки, повторите позже",
+        });
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.error("Ошибка сервера (create_applications):", error);
+      return res.sendStatus(500);
     }
   } catch (error) {
     console.error("Ошибка при обращении к базе данных:", error);

@@ -4,39 +4,32 @@ const Schema = mongoose.Schema;
 
 const applicationSchema = new Schema(
   {
-    _id: { 
-      type: String, 
-      required: true 
-    },
-    yandex_id: {
+    _id: {
       type: String,
       required: true,
     },
-    location_id: {
+    yandexId: {
       type: String,
       required: true,
     },
-    worktype_id: {
+    apartmentId: {
       type: String,
       required: true,
     },
-    address: {
-      type: [String],
-      required: true,
-    },
-    description: {
+    requestLocationId: {
       type: String,
       required: true,
     },
-    status_id: {
+    requestCategoryId: {
       type: String,
       required: true,
     },
-    viewing: 
-    {
-      type: Boolean,
+    requestSubCategoryId: {
+      type: String,
       required: true,
     },
+    dataMessage: String,
+    userMessage: String,
   },
   {
     versionKey: false,

@@ -8,15 +8,15 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
   const { phoneNumber, code } = queryResult.outputContexts[1].parameters;
   const digitsOnlyPhoneNum = format_number(phoneNumber);
   const digitsOnly = format_code(code);
-  console.log(digitsOnly);
   try {
     const data = {
-      phoneNumber: digitsOnlyPhoneNum,
+      phoneNumber: "77717849422",
       code: digitsOnly,
-      yandexId: user_id,
+      yandexId: "1111",
     };
 
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
+    console.log(response.data);
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);
