@@ -33,7 +33,7 @@ aliceRouter.post("/", async (req, res) => {
       } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
         try {
           const respon = await axios.get(process.env.GET_ADDRESS_URL, {
-            params: user_id,
+            params: { YandexId: user_id },
           });
           response.session_state = { address: respon.data };
         } catch (error) {

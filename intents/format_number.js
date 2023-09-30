@@ -30,6 +30,11 @@ const format_number_app = (number) => {
     .replace(/(\d{2})(\d{2})/, "$1-$2"));
 };
 
+const format_code = (number) => {
+  const digitsOnly = number.replace(/\D/g, "");
+  return digitsOnly.length === 4 ? digitsOnly : null;
+};
+
 const usual_number = (number) => {
   return number.replace(/\D/g, "").replace(/^0+/, "");
 };
@@ -38,4 +43,5 @@ module.exports = {
   format_number_app,
   usual_number,
   format_number_to_770,
+  format_code,
 };

@@ -21,17 +21,21 @@ const create_applications = async (res, queryResult, user_id) => {
     }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
-    const location_id = LOCATION.find((item) => item.Name === location)?.oid;
-    const worktype_id = WORKTYPE.find((item) => item.Name === worktype)?.oid;
+    const requestLocationId = LOCATION.find(
+      (item) => item.Name === location
+    )?.oid;
+    const requestCategoryId = WORKTYPE.find(
+      (item) => item.Name === worktype
+    )?.oid;
 
     const newApplication = new Application({
       _id: newId,
       yandexId: user_id,
-      apartmentId,
-      requestLocationId: location_id,
-      requestCategoryId: worktype_id,
+      apartmentId, //получаем с помощью метода
+      requestLocationId: requestLocationId,
+      requestCategoryId: requestCategoryId,
       requestSubCategoryId,
-      dataMessage,
+      dataMessage: `Заявка по адресу: ${city}, ${houses.address}\n\t• местонахождение - ${location_id}\n\t• тип работ - ${worktype_id}`,
       userMessage,
     });
 

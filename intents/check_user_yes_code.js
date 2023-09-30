@@ -1,4 +1,7 @@
-const { format_number_to_770 } = require("../intents/format_number");
+const {
+  format_number_to_770,
+  format_code,
+} = require("../intents/format_number");
 const axios = require("axios");
 const { response } = require("express");
 require("dotenv").config();
@@ -9,7 +12,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnly = format_code(code);
   try {
     const data = {
-      phoneNumber: "77717849422",
+      userName: "77717849422",
       code: digitsOnly,
       yandexId: "1111",
     };
@@ -30,11 +33,6 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);
   }
-};
-
-const format_code = (number) => {
-  const digitsOnly = number.replace(/\D/g, "");
-  return digitsOnly.length === 4 ? digitsOnly : null;
 };
 
 module.exports = check_user_yes_code;
