@@ -26,7 +26,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       },
     };
     res.send({
-      fulfillmentText: `Приветствую Вас, ${response.data}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `Приветствую Вас, ${response.data.fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
       outputContexts: [context],
     });
   } catch (error) {
