@@ -23,13 +23,15 @@ aliceRouter.post("/", async (req, res) => {
   const response = { version, session };
   let intentResponse;
   if (!request.original_utterance) {
-    if(state.user.log && state.user.log === "1")
+    if (!request.session.user) {
+      if(state.user.log && state.user.log === "1")
     {
       intentResponse = await detectIntent(`Привет ${state.user.name}` , user_id);
 
       response.response = { text: intentResponse.fulfillmentText };
     } else{
       response.response = hello();
+    }
     }
   } else {
     intentResponse = await detectIntent(request.original_utterance, user_id);
@@ -44,7 +46,7 @@ aliceRouter.post("/", async (req, res) => {
          /* const respon = await axios.get(process.env.GET_ADDRESS_URL, {
             params: { YandexId: user_id },
           });
-          response.session_state = { address: respon.data };*/
+          response.session_state = { address: respon.data };
         } catch (error) {
           console.error(error);
           return res.sendStatus(500);
