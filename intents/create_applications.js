@@ -16,14 +16,17 @@ const create_applications = async (res, queryResult, user_id) => {
           .toString()
           .padStart(2, "0")}`
       : "00-01";
-    if (description === "") {
+    /*if (description === "") {
       description = reason;
-    }
+    }*/
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const requestLocationId = LOCATION.find(
       (item) => item.Name === location
     )?.oid;
+    const locationStandartName = LOCATION.find(
+      (item) => item.Name === location
+    )?.Name;
     const requestCategoryId = WORKTYPE.find(
       (item) => item.Name === worktype
     )?.oid;
@@ -34,15 +37,17 @@ const create_applications = async (res, queryResult, user_id) => {
       apartmentId, //получаем с помощью метода
       requestLocationId: requestLocationId,
       requestCategoryId: requestCategoryId,
-      requestSubCategoryId,
-      dataMessage: `Заявка по адресу: ${city}, ${houses.address}\n\t• местонахождение - ${location_id}\n\t• тип работ - ${worktype_id}`,
-      userMessage,
+      w,
+      status_id,
+      dataMessage: `Заявка по адресу: ${city}, ${houses.address}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
+      userMessage: description,
     });
 
     await newApplication.save();
     try {
       const applicationToSend = { ...newApplication };
       delete applicationToSend._id;
+      delete applicationToSend.status_id;
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend

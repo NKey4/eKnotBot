@@ -28,6 +28,10 @@ const applicationSchema = new Schema(
       type: String,
       required: true,
     },
+    status_id: {
+      type: String,
+      required: true,
+    },
     dataMessage: String,
     userMessage: String,
   },
