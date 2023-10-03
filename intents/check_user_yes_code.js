@@ -18,7 +18,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     };
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
     console.log(response.data);*/
-    if (digitsOnly === "7777"){
+    if (digitsOnly === "7777") {
       const context = {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
         lifespanCount: 100,
@@ -28,7 +28,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
         },
       };
       res.send({
-        fulfillmentText: `Приветствую Вас, ${response.data.fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+        fulfillmentText: `Приветствую Вас, Клышев Еркин Амангельдинович.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
         outputContexts: [context],
       });
     }

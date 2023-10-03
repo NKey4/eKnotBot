@@ -23,30 +23,28 @@ aliceRouter.post("/", async (req, res) => {
   const response = { version, session };
   let intentResponse;
   if (!request.original_utterance) {
-    if (!request.session.user) {
-      if(state.user.log && state.user.log === "1")
-    {
-      intentResponse = await detectIntent(`Привет ${state.user.name}` , user_id);
-
+    if (Object.keys(state.user).length) {
+      // response.user_state_update = { fullName: null };
+      intentResponse = await detectIntent(`Привет ${state.user.name}`, user_id);
       response.response = { text: intentResponse.fulfillmentText };
-    } else{
+    } else {
       response.response = hello();
-    }
     }
   } else {
     intentResponse = await detectIntent(request.original_utterance, user_id);
-    console.log(intentResponse.context.parameters);
     response.response = { text: intentResponse.fulfillmentText };
     if (intentResponse.intentDisplayName) {
       if (intentResponse.intentDisplayName === "Exit") {
         response.response.end_session = true;
-      } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
+      } else if (
+        intentResponse.context[3] &&
+        intentResponse.context[3].parameters.fields.fullName
+      ) {
         try {
-          response.user_state_update ={log: null};
-         /* const respon = await axios.get(process.env.GET_ADDRESS_URL, {
-            params: { YandexId: user_id },
-          });
-          response.session_state = { address: respon.data };*/
+          response.user_state_update = {
+            fullName:
+              intentResponse.context[3].parameters.fields.fullName.stringValue,
+          };
         } catch (error) {
           console.error(error);
           return res.sendStatus(500);
