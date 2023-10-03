@@ -46,7 +46,7 @@ aliceRouter.post("/", async (req, res) => {
          /* const respon = await axios.get(process.env.GET_ADDRESS_URL, {
             params: { YandexId: user_id },
           });
-          response.session_state = { address: respon.data };
+          response.session_state = { address: respon.data };*/
         } catch (error) {
           console.error(error);
           return res.sendStatus(500);
