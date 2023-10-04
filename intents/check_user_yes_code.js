@@ -12,19 +12,40 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnly = format_code(code);
   try {
     /*const data = {
+      yandexId: "1111",
       userName: "77717849422",
       code: digitsOnly,
-      yandexId: "1111",
     };
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
-    console.log(response.data);*/
+    const fullName = response.data.fullName;
+    console.log(response.data.fullName);
+    if(response.data.fullName){
+      const context = {
+        name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
+        lifespanCount: 100,
+        parameters: {
+          fullName: fullName,
+          flag: "true",
+        },
+      };
+      res.send({
+        fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+        outputContexts: [context],
+      });
+    } else{
+      return res.sendStatus(404);
+    }*/
     if (digitsOnly === "7777") {
+      const response = await axios.get(process.env.CONFIRM_CODE_URL, { YandexId: user_id });
       const context = {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
         lifespanCount: 100,
         parameters: {
           fullName: "Клышев Еркин Амангельдинович",
-          flag: "true",
+          city: response.data.city,
+          apartmentId:response.data.houses.apartmentRoles.apartmentId,
+          address:response.data.houses.address,
+          flat:response.data.houses.apartmentRoles.name,
         },
       };
       res.send({

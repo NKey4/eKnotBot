@@ -1,5 +1,6 @@
 const Application = require("../models/application");
 const { STATUS, WORKTYPE, LOCATION } = require("../constants/constants");
+require("dotenv").config();
 
 const create_applications = async (res, queryResult, user_id) => {
   try {
@@ -9,6 +10,11 @@ const create_applications = async (res, queryResult, user_id) => {
       worktype,
       description = "",
     } = queryResult.outputContexts[1].parameters;
+  
+    //Нахождение контекста
+    const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+    const foundContext = queryResult.outputContexts.find(context => context.name === contextToFind)
+    console.log(foundContext);
 
     const latestApplication = await Application.findOne().sort({ _id: -1 });
     const newId = latestApplication
@@ -37,7 +43,7 @@ const create_applications = async (res, queryResult, user_id) => {
       apartmentId, //получаем с помощью метода
       requestLocationId: requestLocationId,
       requestCategoryId: requestCategoryId,
-      w,
+      requestSubCategoryId: "65112d8b4db28605ac132b67",
       status_id,
       dataMessage: `Заявка по адресу: ${city}, ${houses.address}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
       userMessage: description,
