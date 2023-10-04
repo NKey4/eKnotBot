@@ -20,28 +20,33 @@ const hello = () => ({
 aliceRouter.post("/", async (req, res) => {
   const { request, session, state, version } = req.body;
   const { user_id } = session.user;
-  const response = { version, session };
+  const jsonAnswer = { version, session };
   let intentResponse;
   if (!request.original_utterance) {
     if (Object.keys(state.user).length) {
-      // response.user_state_update = { fullName: null };
-      intentResponse = await detectIntent(`Привет ${state.user.name}`, user_id);
-      response.response = { text: intentResponse.fulfillmentText };
+      // jsonAnswer.user_state_update = { fullName: null };
+      intentResponse = await detectIntent(
+        `Привет ${state.user.fullName}`,
+        user_id
+      );
+      jsonAnswer.response = { text: intentResponse.fulfillmentText };
     } else {
-      response.response = hello();
+      jsonAnswer.response = hello();
     }
   } else {
     intentResponse = await detectIntent(request.original_utterance, user_id);
-    response.response = { text: intentResponse.fulfillmentText };
+    jsonAnswer.response = { text: intentResponse.fulfillmentText };
     if (intentResponse.intentDisplayName) {
       if (intentResponse.intentDisplayName === "Exit") {
-        response.response.end_session = true;
+        jsonAnswer.response.end_session = true;
       } else if (
         intentResponse.context[3] &&
+        intentResponse.context[3].parameters &&
+        intentResponse.context[3].parameters.fields &&
         intentResponse.context[3].parameters.fields.fullName
       ) {
         try {
-          response.user_state_update = {
+          jsonAnswer.user_state_update = {
             fullName:
               intentResponse.context[3].parameters.fields.fullName.stringValue,
           };
@@ -52,7 +57,7 @@ aliceRouter.post("/", async (req, res) => {
       }
     }
   }
-  res.json(response);
+  res.json(jsonAnswer);
 });
 
 module.exports = aliceRouter;
