@@ -9,6 +9,10 @@ const create_applications = async (res, queryResult, user_id) => {
       location,
       worktype,
       description = "",
+      city,
+      apartmentId,
+      address,
+      flat,
     } = queryResult.outputContexts[1].parameters;
   
     //Нахождение контекста
@@ -40,12 +44,12 @@ const create_applications = async (res, queryResult, user_id) => {
     const newApplication = new Application({
       _id: newId,
       yandexId: user_id,
-      apartmentId, //получаем с помощью метода
+      apartmentId:apartmentId,
       requestLocationId: requestLocationId,
       requestCategoryId: requestCategoryId,
       requestSubCategoryId: "65112d8b4db28605ac132b67",
       status_id,
-      dataMessage: `Заявка по адресу: ${city}, ${houses.address}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
+      dataMessage: `Заявка по адресу: ${city}, ${address}, ${flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
       userMessage: description,
     });
 
