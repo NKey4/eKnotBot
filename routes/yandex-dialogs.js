@@ -42,7 +42,6 @@ aliceRouter.post("/", async (req, res) => {
         try {
           const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
           const foundContext = intentResponse.context.find(context => context.name === contextToFind)
-          console.log(foundContext.parameters.fields.fullName.stringValue);
           jsonAnswer.user_state_update = {
             fullName: foundContext.parameters.fields.fullName.stringValue,
           };

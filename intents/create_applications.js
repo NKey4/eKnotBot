@@ -4,6 +4,7 @@ require("dotenv").config();
 
 const create_applications = async (res, queryResult, user_id) => {
   try {
+    const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
     const {
       "worktype.original": reason,
       location,
@@ -13,13 +14,10 @@ const create_applications = async (res, queryResult, user_id) => {
       apartmentId,
       address,
       flat,
-    } = queryResult.outputContexts[1].parameters;
-  
-    //Нахождение контекста
-    const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    const foundContext = queryResult.outputContexts.find(context => context.name === contextToFind)
-    console.log(foundContext);
+    } = queryResult.outputContexts.find(context => context.name === contextToFind).parameters;
 
+    console.log(queryResult.outputContexts.find(context => context.name === contextToFind));
+    console.log(apartmentId);
     const latestApplication = await Application.findOne().sort({ _id: -1 });
     const newId = latestApplication
       ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
