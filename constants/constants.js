@@ -19,13 +19,15 @@ const requestCategoryId = [
   { oid: "60e7f17d089b28500c814c9d", Name: "Другое" },
 ];
 const requestLocationId = [
-  { Name: "Квартира", oid: "60e7ea00e4e96aab27b9184d" },
-  { Name: "Подъезд", oid: "60e7ea00e4e96aab27b9184e" },
-  { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f" },
-  { Name: "Двор", oid: "60e7ea00e4e96aab27b91850" },
-  { Name: "Паркинг", oid: "60e7ea00e4e96aab27b91851" },
-  { Name: "Другое", oid: "60e7ea00e4e96aab27b91852" },
+  { Name: "Квартира", oid: "60e7ea00e4e96aab27b9184d", predName: "В квартире" },
+  { Name: "Подъезд", oid: "60e7ea00e4e96aab27b9184e", predName: "В подъезде" },
+  { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f", predName: "В доме" },
+  { Name: "Двор", oid: "60e7ea00e4e96aab27b91850", predName: "Во дворе" },
+  { Name: "Паркинг", oid: "60e7ea00e4e96aab27b91851", predName: "В паркинге" },
+  { Name: "Другое", oid: "60e7ea00e4e96aab27b91852", predName: "В другом" },
 ];
 module.exports = {
   STATUS,
+  requestCategoryId,
+  requestLocationId,
 };

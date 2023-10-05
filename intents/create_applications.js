@@ -1,5 +1,10 @@
 const Application = require("../models/application");
-const { STATUS, requestCategoryId, requestLocationId } = require("../constants/constants");
+const {
+  STATUS,
+  requestCategoryId,
+  requestLocationId,
+} = require("../constants/constants");
+const axios = require("axios");
 require("dotenv").config();
 
 const create_applications = async (res, queryResult, user_id) => {
@@ -14,10 +19,21 @@ const create_applications = async (res, queryResult, user_id) => {
       apartmentId,
       address,
       flat,
-    } = queryResult.outputContexts.find(context => context.name === contextToFind).parameters;
-
-    console.log(queryResult.outputContexts.find(context => context.name === contextToFind));
-    console.log(apartmentId);
+    } = queryResult.outputContexts.find(
+      (context) => context.name === contextToFind
+    ).parameters;
+    // let location = "123";
+    // let worktype = "1231";
+    // let description = "";
+    // let city = "";
+    // let apartmentId = "";
+    // let address = "";
+    // let flat = "";
+    console.log(
+      queryResult.outputContexts.find(
+        (context) => context.name === contextToFind
+      )
+    );
     const latestApplication = await Application.findOne().sort({ _id: -1 });
     const newId = latestApplication
       ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
@@ -30,19 +46,22 @@ const create_applications = async (res, queryResult, user_id) => {
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const RequestLocationId = requestLocationId.find(
-      (item) => item.Name === location
+      (item) => item.predName === location
     )?.oid;
     const locationStandartName = requestLocationId.find(
-      (item) => item.Name === location
+      (item) => item.predName === location
     )?.Name;
     const RequestCategoryId = requestCategoryId.find(
       (item) => item.Name === worktype
     )?.oid;
+    console.log(RequestLocationId);
+    console.log(RequestCategoryId);
+    console.log(locationStandartName);
 
     const newApplication = new Application({
       _id: newId,
       yandexId: "1111",
-      apartmentId:apartmentId,
+      apartmentId: apartmentId,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
       requestSubCategoryId: "65112d8b4db28605ac132b67",
@@ -53,7 +72,7 @@ const create_applications = async (res, queryResult, user_id) => {
 
     await newApplication.save();
     try {
-      const applicationToSend = { ...newApplication };
+      const applicationToSend = newApplication.toObject();
       delete applicationToSend._id;
       delete applicationToSend.status_id;
       const response = await axios.post(
@@ -67,7 +86,6 @@ const create_applications = async (res, queryResult, user_id) => {
           fulfillmentText: "Ошибка создания заявки, повторите позже",
         });
       }
-      console.log(response.data);
     } catch (error) {
       console.error("Ошибка сервера (create_applications):", error);
       return res.sendStatus(500);
