@@ -21,7 +21,6 @@ dialogFlowrouter.post("/", async (req, res) => {
   const { queryResult, session } = req.body;
   const user_id = session.split("/").pop();
   const intentName = queryResult.intent.displayName;
-  console.log(intentName);
 
   if (intentName.startsWith("create_applications")) {
     const createIntentName =

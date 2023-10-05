@@ -22,27 +22,15 @@ const create_applications = async (res, queryResult, user_id) => {
     } = queryResult.outputContexts.find(
       (context) => context.name === contextToFind
     ).parameters;
-    // let location = "123";
-    // let worktype = "1231";
-    // let description = "";
-    // let city = "";
-    // let apartmentId = "";
-    // let address = "";
-    // let flat = "";
-    console.log(
-      queryResult.outputContexts.find(
-        (context) => context.name === contextToFind
-      )
-    );
     const latestApplication = await Application.findOne().sort({ _id: -1 });
     const newId = latestApplication
       ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
           .toString()
           .padStart(2, "0")}`
       : "00-01";
-    /*if (description === "") {
+    if (description === "") {
       description = reason;
-    }*/
+    }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const RequestLocationId = requestLocationId.find(
@@ -54,9 +42,6 @@ const create_applications = async (res, queryResult, user_id) => {
     const RequestCategoryId = requestCategoryId.find(
       (item) => item.Name === worktype
     )?.oid;
-    console.log(RequestLocationId);
-    console.log(RequestCategoryId);
-    console.log(locationStandartName);
 
     const newApplication = new Application({
       _id: newId,

@@ -18,18 +18,6 @@ const comeback_intent = async (res, queryResult, user_id) => {
         flat: response.data[0].houses[0].apartmentRoles[0].name,
       },
     };
-
-    console.log(context);
-    /*const context = {
-            name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
-            lifespanCount: 100,
-            parameters: {
-              city: "Астана",
-              apartmentId:"dssfsdfsdf",
-              address:"dds4f1sdf4",
-              flat:"response.data.houses.apartmentRoles.name",
-            },
-          };*/
     res.send({
       fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
       outputContexts: [context],
