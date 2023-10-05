@@ -1,5 +1,5 @@
 const Application = require("../models/application");
-const { STATUS, WORKTYPE, LOCATION } = require("../constants/constants");
+const { STATUS, requestCategoryId, requestLocationId } = require("../constants/constants");
 require("dotenv").config();
 
 const create_applications = async (res, queryResult, user_id) => {
@@ -29,22 +29,22 @@ const create_applications = async (res, queryResult, user_id) => {
     }*/
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
-    const requestLocationId = LOCATION.find(
+    const RequestLocationId = requestLocationId.find(
       (item) => item.Name === location
     )?.oid;
-    const locationStandartName = LOCATION.find(
+    const locationStandartName = requestLocationId.find(
       (item) => item.Name === location
     )?.Name;
-    const requestCategoryId = WORKTYPE.find(
+    const RequestCategoryId = requestCategoryId.find(
       (item) => item.Name === worktype
     )?.oid;
 
     const newApplication = new Application({
       _id: newId,
-      yandexId: user_id,
+      yandexId: "1111",
       apartmentId:apartmentId,
-      requestLocationId: requestLocationId,
-      requestCategoryId: requestCategoryId,
+      requestLocationId: RequestLocationId,
+      requestCategoryId: RequestCategoryId,
       requestSubCategoryId: "65112d8b4db28605ac132b67",
       status_id,
       dataMessage: `Заявка по адресу: ${city}, ${address}, ${flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
