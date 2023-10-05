@@ -1,4 +1,3 @@
-const axios = require("axios");
 const express = require("express");
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
@@ -36,12 +35,12 @@ aliceRouter.post("/", async (req, res) => {
     if (intentResponse.intentDisplayName) {
       if (intentResponse.intentDisplayName === "Exit") {
         jsonAnswer.response.end_session = true;
-      } else if (
-        intentResponse.intentDisplayName === "check_user_yes_code") 
-        {
+      } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
         try {
           const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-          const foundContext = intentResponse.context.find(context => context.name === contextToFind)
+          const foundContext = intentResponse.context.find(
+            (context) => context.name === contextToFind
+          );
           jsonAnswer.user_state_update = {
             fullName: foundContext.parameters.fields.fullName.stringValue,
           };
