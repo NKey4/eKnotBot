@@ -10,11 +10,15 @@ require("dotenv").config();
 const create_applications = async (res, queryResult, user_id) => {
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+    // Получение данных о заявке
     let {
       "worktype.original": reason,
       location,
       worktype,
       description = "",
+    } = queryResult.outputContexts[1].parameters;
+    //Получение адреса
+    let {                                           
       city,
       apartmentId,
       address,
@@ -22,12 +26,12 @@ const create_applications = async (res, queryResult, user_id) => {
     } = queryResult.outputContexts.find(
       (context) => context.name === contextToFind
     ).parameters;
-    // const latestApplication = await Application.findOne().sort({ _id: -1 });
-    // const newId = latestApplication
-    //   ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
-    //       .toString()
-    //       .padStart(2, "0")}`
-    //   : "00-01";
+    const latestApplication = await Application.findOne().sort({ _id: -1 });
+    const newId = latestApplication
+       ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
+           .toString()
+           .padStart(2, "0")}`
+       : "00-01";
     if (description === "") {
       description = reason;
     }
@@ -43,29 +47,32 @@ const create_applications = async (res, queryResult, user_id) => {
       (item) => item.Name === worktype
     )?.oid;
 
+    //Для продакшена изменить yandexId на userId
     const newApplication = new Application({
-      //_id: newId,
+      _id: newId,
       yandexId: "1111",
       apartmentId: apartmentId,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
       requestSubCategoryId: "65112d8b4db28605ac132b67",
       status_id,
+      yandexAddress: `город ${city}, ${address}, ${flat}`,
       dataMessage: `Заявка по адресу: ${city}, ${address}, ${flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
       userMessage: description,
     });
 
-    // await newApplication.save();
+    await newApplication.save();
     try {
       const applicationToSend = newApplication.toObject();
-      //delete applicationToSend._id;
+      delete applicationToSend._id;
       delete applicationToSend.status_id;
+      delete applicationToSend.yandexAddress;
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
       if (newApplication) {
-        res.send({ fulfillmentText: `Ваша заявка №{"newId"} отправлена` });
+        res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
       } else {
         res.send({
           fulfillmentText: "Ошибка создания заявки, повторите позже",

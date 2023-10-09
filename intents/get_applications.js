@@ -4,10 +4,10 @@ require("dotenv").config();
 
 const get_applications = async (res, queryResult, user_id) => {
   try {
-    const applications = await Application.find({ userId: user_id });
+    const applications = await Application.find({ yandexId: user_id });
 
     if (!applications || applications.length === 0) {
-      return res.sendStatus(400);
+      return res.status(404).send("Заявки не найдены")
     }
 
     const counts = {};
@@ -18,7 +18,7 @@ const get_applications = async (res, queryResult, user_id) => {
 
     const countText = Object.entries(counts)
       .map(([status_id, count]) => {
-        const statusLabel = STATUS.find((item) => item.key === status_id)?.Name;
+        const statusLabel = STATUS.find((item) => item.oid === status_id)?.Name;
         return `Количество заявок со статусом "${statusLabel}": ${count}`;
       })
       .join("\n");

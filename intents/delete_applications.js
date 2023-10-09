@@ -5,7 +5,7 @@ const delete_applications = async (res, queryResult, user_id) => {
   try {
     const numberApp = queryResult.outputContexts[0].parameters["number"];
 
-    const app = await Application.findOne({ userId: user_id });
+    const app = await Application.findOne({ yandexId: user_id });
 
     if (!app) {
       return res.sendStatus(400);
@@ -19,7 +19,7 @@ const delete_applications = async (res, queryResult, user_id) => {
     }
 
     // Обновление статуса заявки
-    await Application.findOneAndUpdate({ userId: user_id }, { status: "6" });
+    await Application.findOneAndUpdate({ yandexId: user_id }, { status: "6" });
 
     res.send({ fulfillmentText: `Заявка под №${numberApp} отменена` });
   } catch (error) {

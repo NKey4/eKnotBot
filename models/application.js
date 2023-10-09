@@ -32,6 +32,10 @@ const applicationSchema = new Schema(
       type: String,
       required: true,
     },
+    yandexAddress: {
+      type: String,
+      required: true,
+    },
     dataMessage: String,
     userMessage: String,
   },

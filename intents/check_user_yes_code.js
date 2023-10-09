@@ -24,6 +24,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       const context = {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
         lifespanCount: 100,
+        //исправить fullName
         parameters: {
           fullName: "fullName",
           city: response.data[0].city,

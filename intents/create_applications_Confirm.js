@@ -6,16 +6,19 @@ const create_applications_Confirm = async(res, queryResult, user_id) =>{
         location,
         worktype,
         description = "",
+      } = queryResult.outputContexts[1].parameters;
+      let {                                           
         city,
-        apartmentId,
         address,
         flat,
-      } = queryResult.outputContexts[1].parameters;
+      } = queryResult.outputContexts.find(
+        (context) => context.name === contextToFind
+      ).parameters;
       location = location.toLowerCase();
     if(description === ""){
-        res.send({fulfillmentText:`Вы желаете подать заявку, что у Вас ${location} ${reason}. Подтвердите, пожалуйста.\nЕсли же в заявке допущена ошибка, то придётся заново формировать заявку.`})  
+        res.send({fulfillmentText:`Вы желаете подать заявку, что у Вас ${location} ${reason}. По адресу: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nЕсли возникла какая-то неточность в заявке, то попробуйте заново описать проблему.`})  
     }else{
-        res.send({fulfillmentText:`Вы желаете подать заявку, что у Вас ${location} ${reason}.Подробности: ${description}. Подтвердите, пожалуйста.\nЕсли же в заявке допущена ошибка, то придётся заново формировать заявку.`})  
+        res.send({fulfillmentText:`Вы желаете подать заявку, что у Вас ${location} ${reason}.Подробности: ${description}. По адресу: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nЕсли возникла какая-то неточность в заявке, то попробуйте заново описать проблему.`})  
     };
 }
 
