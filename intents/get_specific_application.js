@@ -7,16 +7,16 @@ const get_specific_application = async (res, queryResult, user_id) => {
   try {
     let number = queryResult.outputContexts[0].parameters["number"];
 
-    const user = await Application.find({ yandexId: user_id });
+    const application = await Application.find({ yandexId: user_id });
 
-    if (!user || user.length === 0) {
+    if (!application || application.length === 0) {
       return res.sendStatus(400);
     }
 
     if (Number.isInteger(number)) {
       number = format_number_app(number);
     } else {
-      const data = user.map((app) => app._id);
+      const data = application.map((app) => app.id);
       if (number === "last") {
         number = format_number_app(data.length);
       } else if (number === "penultimate") {
@@ -24,7 +24,7 @@ const get_specific_application = async (res, queryResult, user_id) => {
       }
     }
 
-    const appResult = user.find((app) => app._id === number);
+    const appResult = application.find((app) => app.id === number);
 
     if (!appResult) {
       return res.sendStatus(400);
@@ -33,7 +33,9 @@ const get_specific_application = async (res, queryResult, user_id) => {
     const statusValue = STATUS.find(
       (status_id) => status_id.oid === appResult.status_id
     )?.Name;
-    res.send({ fulfillmentText: `Статус заявки: ${statusValue}. Адрес: ${appResult.yandexAddress}.` });
+    res.send({
+      fulfillmentText: `Статус заявки: ${statusValue}. Адрес: ${appResult.yandexAddress}.`,
+    });
   } catch (error) {
     console.error(
       "Ошибка при получении данных о заявках из базы данных:",

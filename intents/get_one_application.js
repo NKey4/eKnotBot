@@ -5,16 +5,14 @@ require("dotenv").config();
 
 const get_one_application = async (res, queryResult, user_id) => {
   try {
-    const user = await Application.find({ yandexId: user_id });
+    const application = await Application.find({ yandexId: user_id });
 
-    if (!user || user.length === 0) {
+    if (!application || application.length === 0) {
       return res.sendStatus(400);
     }
 
     const status = queryResult.outputContexts[0].parameters["status"];
-    const statusId = STATUS.find(
-      (status_id) => status_id.key === status
-    )?.oid;
+    const statusId = STATUS.find((status_id) => status_id.key === status)?.oid;
     console.log(statusId);
     const statusName = STATUS.find(
       (status_id) => status_id.key === status
@@ -22,9 +20,9 @@ const get_one_application = async (res, queryResult, user_id) => {
 
     let fulfillmentText = "";
 
-    user.forEach((app) => {
+    application.forEach((app) => {
       if (app.status_id === statusId) {
-        const key = usual_number(app._id);
+        const key = usual_number(app.id);
         fulfillmentText += `Заявка под номером ${key}, со статусом: ${statusName}, по адресу: ${app.yandexAddress}\n.`;
       }
     });

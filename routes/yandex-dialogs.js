@@ -2,7 +2,7 @@ const express = require("express");
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
 
-const hello = () => ({
+const helloResponse = {
   text: "Здравствуйте, если Вы тут впервые, то Вам необходимо скачать наше приложение в Play Market. Далее включить разрешение в настройках. После выполнения предыдущих действий, введите сюда свой номер телефона",
   card: {
     type: "BigImage",
@@ -14,44 +14,46 @@ const hello = () => ({
     },
   },
   end_session: false,
-});
+};
 
 aliceRouter.post("/", async (req, res) => {
-  const { request, session, state, version } = req.body;
-  const { user_id } = session.user;
-  const jsonAnswer = { version, session };
-  let intentResponse;
-  if (!request.command) {
-    if (Object.keys(state.user).length) {
-      // jsonAnswer.user_state_update = { fullName: null };
-      intentResponse = await detectIntent(`${state.user.fullName}`, user_id);
-      jsonAnswer.response = { text: intentResponse.fulfillmentText };
+  try {
+    const { request, session, state, version } = req.body;
+    const { user_id } = session.user;
+    const jsonAnswer = { version, session };
+    let intentResponse;
+
+    if (!request.command) {
+      if (Object.keys(state.user).length) {
+        // jsonAnswer.user_state_update = { fullName: null };
+        const fullName = state.user.fullName || "";
+        intentResponse = await detectIntent(fullName, user_id);
+        jsonAnswer.response = { text: intentResponse.fulfillmentText };
+      } else {
+        jsonAnswer.response = helloResponse;
+      }
     } else {
-      jsonAnswer.response = hello();
-    }
-  } else {
-    intentResponse = await detectIntent(request.command, user_id);
-    jsonAnswer.response = { text: intentResponse.fulfillmentText };
-    if (intentResponse.intentDisplayName) {
+      intentResponse = await detectIntent(request.command, user_id);
+      jsonAnswer.response = { text: intentResponse.fulfillmentText };
+
       if (intentResponse.intentDisplayName === "Exit") {
         jsonAnswer.response.end_session = true;
       } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
-        try {
-          const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-          const foundContext = intentResponse.context.find(
-            (context) => context.name === contextToFind
-          );
-          jsonAnswer.user_state_update = {
-            fullName: foundContext.parameters.fields.fullName.stringValue,
-          };
-        } catch (error) {
-          console.error(error);
-          return res.sendStatus(500);
-        }
+        const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+        const foundContext = intentResponse.context.find(
+          (context) => context.name === contextToFind
+        );
+        jsonAnswer.user_state_update = {
+          fullName: foundContext.parameters.fields.fullName.stringValue,
+        };
       }
     }
+
+    res.json(jsonAnswer);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(500);
   }
-  res.json(jsonAnswer);
 });
 
 module.exports = aliceRouter;

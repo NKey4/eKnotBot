@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const applicationSchema = new Schema(
   {
-    _id: {
+    id: {
       type: String,
       required: true,
     },
