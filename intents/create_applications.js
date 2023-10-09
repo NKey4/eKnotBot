@@ -26,6 +26,18 @@ const create_applications = async (res, queryResult, user_id) => {
     } = queryResult.outputContexts.find(
       (context) => context.name === contextToFind
     ).parameters;
+
+    const context = {
+      name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
+      lifespanCount: 50,
+      parameters: {
+        city: city,
+        apartmentId: apartmentId,
+        address: address,
+        flat: flat
+      },
+    };
+
     const latestApplication = await Application.findOne().sort({ _id: -1 });
     const newId = latestApplication
        ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
@@ -72,10 +84,11 @@ const create_applications = async (res, queryResult, user_id) => {
         applicationToSend
       );
       if (newApplication) {
-        res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
+        res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена`,
+        outputContexts: [context], });
       } else {
         res.send({
-          fulfillmentText: "Ошибка создания заявки, повторите позже",
+          fulfillmentText: "Ошибка создания заявки, повторите позднее",
         });
       }
     } catch (error) {

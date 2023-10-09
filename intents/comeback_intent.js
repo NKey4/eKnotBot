@@ -10,7 +10,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
     );
     const context = {
       name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
-      lifespanCount: 100,
+      lifespanCount: 50,
       parameters: {
         city: response.data[0].city,
         apartmentId: response.data[0].houses[0].apartmentRoles[0].apartmentId,
