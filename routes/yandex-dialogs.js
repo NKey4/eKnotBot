@@ -21,16 +21,16 @@ aliceRouter.post("/", async (req, res) => {
   const { user_id } = session.user;
   const jsonAnswer = { version, session };
   let intentResponse;
-  if (!request.original_utterance) {
+  if (!request.command) {
     if (Object.keys(state.user).length) {
-      // jsonAnswer.user_state_update = { fullName: null };
+      // jsonAnswer.user_state_update = { fullName: null };ч
       intentResponse = await detectIntent(`${state.user.fullName}`, user_id);
       jsonAnswer.response = { text: intentResponse.fulfillmentText };
     } else {
       jsonAnswer.response = hello();
     }
   } else {
-    intentResponse = await detectIntent(request.original_utterance, user_id);
+    intentResponse = await detectIntent(request.command, user_id);
     jsonAnswer.response = { text: intentResponse.fulfillmentText };
     if (intentResponse.intentDisplayName) {
       if (intentResponse.intentDisplayName === "Exit") {

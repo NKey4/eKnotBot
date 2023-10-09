@@ -10,7 +10,7 @@ require("dotenv").config();
 const create_applications = async (res, queryResult, user_id) => {
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    const {
+    let {
       "worktype.original": reason,
       location,
       worktype,
@@ -22,12 +22,12 @@ const create_applications = async (res, queryResult, user_id) => {
     } = queryResult.outputContexts.find(
       (context) => context.name === contextToFind
     ).parameters;
-    const latestApplication = await Application.findOne().sort({ _id: -1 });
-    const newId = latestApplication
-      ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
-          .toString()
-          .padStart(2, "0")}`
-      : "00-01";
+    // const latestApplication = await Application.findOne().sort({ _id: -1 });
+    // const newId = latestApplication
+    //   ? `00-${(parseInt(latestApplication._id.split("-")[1]) + 1)
+    //       .toString()
+    //       .padStart(2, "0")}`
+    //   : "00-01";
     if (description === "") {
       description = reason;
     }
@@ -44,7 +44,7 @@ const create_applications = async (res, queryResult, user_id) => {
     )?.oid;
 
     const newApplication = new Application({
-      _id: newId,
+      //_id: newId,
       yandexId: "1111",
       apartmentId: apartmentId,
       requestLocationId: RequestLocationId,
@@ -55,17 +55,17 @@ const create_applications = async (res, queryResult, user_id) => {
       userMessage: description,
     });
 
-    await newApplication.save();
+    // await newApplication.save();
     try {
       const applicationToSend = newApplication.toObject();
-      delete applicationToSend._id;
+      //delete applicationToSend._id;
       delete applicationToSend.status_id;
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
       if (newApplication) {
-        res.send({ fulfillmentText: `Ваша заявка №${newId} отправлена` });
+        res.send({ fulfillmentText: `Ваша заявка №{"newId"} отправлена` });
       } else {
         res.send({
           fulfillmentText: "Ошибка создания заявки, повторите позже",
