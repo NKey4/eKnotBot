@@ -17,7 +17,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     };
     const response = await axios.post(process.env.CONFIRM_CODE_URL, data);
     const fullName = response.data.fullName;
-    if (!response.data.fullName) {
+    if (response.data.fullName) {
       const response = await axios.get(
         process.env.GET_ADDRESS_URL + "?YandexId=1111"
       );
@@ -26,7 +26,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
         lifespanCount: 50,
         //исправить fullName
         parameters: {
-          fullName: "fullName",
+          fullName: fullName,
           city: response.data[0].city,
           apartmentId: response.data[0].houses[0].apartmentRoles[0].apartmentId,
           address: response.data[0].houses[0].address,
