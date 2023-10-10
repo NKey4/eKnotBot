@@ -34,7 +34,7 @@ const get_specific_application = async (res, queryResult, user_id) => {
       (status_id) => status_id.oid === appResult.status_id
     )?.Name;
     res.send({
-      fulfillmentText: `Статус заявки: ${statusValue}. Адрес: ${appResult.yandexAddress}.`,
+      fulfillmentText: `Статус заявки: ${statusValue}.\n ${appResult.dataMessage}.`,
     });
   } catch (error) {
     console.error(

@@ -27,7 +27,7 @@ const format_number_app = (number) => {
   return (appNumber = number
     .toString()
     .padStart(4, "0")
-    .replace(/(\d{2})(\d{2})/, "$1-$2"));
+    .replace(/(\d{2})(\d{2})/, "$1$2"));
 };
 
 const format_code = (number) => {
