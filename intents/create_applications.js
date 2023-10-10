@@ -27,14 +27,6 @@ const createApplication = async (res, queryResult, user_id) => {
       },
     };
 
-    const latestApplication = await Application.findOne({
-      yandexId: "1111",
-    }).sort({ id: -1 });
-    const newId = latestApplication
-      ? `00-${(parseInt(latestApplication.id.split("-")[1]) + 1)
-          .toString()
-          .padStart(2, "0")}`
-      : "00-01";
     if (description === "") {
       description = reason;
     }
@@ -51,7 +43,7 @@ const createApplication = async (res, queryResult, user_id) => {
     )?.oid;
 
     const newApplication = new Application({
-      id: newId,
+      id: " ",
       yandexId: "1111",
       apartmentId: context.parameters.apartmentId,
       requestLocationId: RequestLocationId,
@@ -79,7 +71,7 @@ const createApplication = async (res, queryResult, user_id) => {
 
     if (newApplication) {
       res.send({
-        fulfillmentText: `Ваша заявка №${newId} отправлена`,
+        fulfillmentText: `Ваша заявка отправлена`,
         outputContexts: [context],
       });
     } else {
