@@ -19,7 +19,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       },
     };
     res.send({
-      fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `Приветствую Вас!, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
       outputContexts: [context],
     });
   } catch (error) {

@@ -10,13 +10,12 @@ require("dotenv").config();
 const createApplication = async (res, queryResult, user_id) => {
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    let {
-      "worktype.original": reason,
-      location,
-      worktype,
-      description = "",
-    } = queryResult.outputContexts[1].parameters;
-
+    // let {
+    //   "worktype.original": reason,
+    //   location,
+    //   worktype,
+    //   description = "",
+    // } = queryResult.outputContexts[1].parameters;
     const context = {
       name: contextToFind,
       lifespanCount: 50,
@@ -26,20 +25,20 @@ const createApplication = async (res, queryResult, user_id) => {
         ).parameters,
       },
     };
-
-    if (description === "") {
-      description = reason;
+    console.log(context);
+    if (context.parameters.description === "") {
+      context.parameters.description = context.parameters["worktype.original"];
     }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const RequestLocationId = requestLocationId.find(
-      (item) => item.predName === location
+      (item) => item.predName === context.parameters.location
     )?.oid;
     const locationStandartName = requestLocationId.find(
-      (item) => item.predName === location
+      (item) => item.predName === context.parameters.location
     )?.Name;
     const RequestCategoryId = requestCategoryId.find(
-      (item) => item.Name === worktype
+      (item) => item.Name === context.parameters.worktype
     )?.oid;
 
     const newApplication = new Application({
@@ -51,29 +50,28 @@ const createApplication = async (res, queryResult, user_id) => {
       requestSubCategoryId: "65112d8b4db28605ac132b67",
       status_id,
       yandexAddress: `город ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}`,
-      dataMessage: `Заявка по адресу: ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${worktype}`,
-      userMessage: description,
+      dataMessage: `Заявка по адресу: ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${context.parameters.worktype}`,
+      userMessage: context.parameters.description,
     });
-
-    await newApplication.save();
-
-    const applicationToSend = {
-      ...newApplication.toObject(),
-      id: undefined,
-      status_id: undefined,
-      yandexAddress: undefined,
-    };
-
-    const response = await axios.post(
-      process.env.CREATE_APPLICATION_URL,
-      applicationToSend
-    );
 
     if (newApplication) {
       res.send({
-        fulfillmentText: `Ваша заявка отправлена`,
+        fulfillmentText: `Ваша заявка отправлена!`,
         outputContexts: [context],
       });
+      await newApplication.save();
+
+      const applicationToSend = {
+        ...newApplication.toObject(),
+        id: undefined,
+        status_id: undefined,
+        yandexAddress: undefined,
+      };
+
+      const response = await axios.post(
+        process.env.CREATE_APPLICATION_URL,
+        applicationToSend
+      );
     } else {
       res.send({
         fulfillmentText: "Ошибка создания заявки, повторите позднее",
