@@ -6,9 +6,14 @@ const {
 } = require("../constants/constants");
 const axios = require("axios");
 require("dotenv").config();
-
+const { struct } = require("pb-util");
+const { ContextsClient } = require("@google-cloud/dialogflow").v2;
 
 const createApplication = async (res, queryResult, user_id) => {
+  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+  const contextsClient = new ContextsClient({
+    credentials: { private_key, client_email },
+  });
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
     const context = {
@@ -20,6 +25,7 @@ const createApplication = async (res, queryResult, user_id) => {
         ).parameters,
       },
     };
+
     if (context.parameters.description === "") {
       context.parameters.description = context.parameters["worktype.original"];
     }
@@ -47,11 +53,7 @@ const createApplication = async (res, queryResult, user_id) => {
       dataMessage: `Заявка по адресу: ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${context.parameters.worktype}`,
       userMessage: context.parameters.description,
     });
-
-    delete context.parameters.description;
-    delete context.parameters['description.original'];
-    console.log(context);
-
+    console.log(newApplication);
     if (
       newApplication.yandexId === undefined ||
       newApplication.apartmentId === undefined ||
@@ -65,7 +67,6 @@ const createApplication = async (res, queryResult, user_id) => {
     } else {
       res.send({
         fulfillmentText: `Ваша заявка отправлена!\nДля того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
-        outputContexts: [context],
       });
 
       await newApplication.save();
@@ -76,14 +77,27 @@ const createApplication = async (res, queryResult, user_id) => {
         status_id: undefined,
         yandexAddress: undefined,
       };
-
+      const parameters = {
+        description: "",
+      };
+      const request = {
+        context: {
+          name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
+          parameters: struct.encode(parameters),
+          lifespanCount: 50,
+        },
+      };
+      await contextsClient.updateContext(request);
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
-      
+
       const requestId = String(response.data.requestId);
-      await Application.updateOne({_id:newApplication._id},{id:requestId});
+      await Application.updateOne(
+        { _id: newApplication._id },
+        { id: requestId }
+      );
     }
   } catch (error) {
     console.error("Ошибка:", error);

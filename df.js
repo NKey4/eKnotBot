@@ -1,4 +1,4 @@
-const dialogflow = require("@google-cloud/dialogflow");
+const dialogflow = require("@google-cloud/dialogflow").v2;
 require("dotenv").config();
 
 const { project_id, private_key, client_email } = JSON.parse(
