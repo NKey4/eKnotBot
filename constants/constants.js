@@ -21,7 +21,7 @@ const requestCategoryId = [
 const requestLocationId = [
   { Name: "Квартира", oid: "60e7ea00e4e96aab27b9184d", predName: "В квартире" },
   { Name: "Подъезд", oid: "60e7ea00e4e96aab27b9184e", predName: "В подъезде" },
-  { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f", predName: "в доме" },
+  { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f", predName: "В доме" },
   { Name: "Двор", oid: "60e7ea00e4e96aab27b91850", predName: "Во дворе" },
   { Name: "Паркинг", oid: "60e7ea00e4e96aab27b91851", predName: "В паркинге" },
   { Name: "Другое", oid: "60e7ea00e4e96aab27b91852", predName: "В другом" },

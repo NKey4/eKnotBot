@@ -7,15 +7,10 @@ const {
 const axios = require("axios");
 require("dotenv").config();
 
+
 const createApplication = async (res, queryResult, user_id) => {
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    // let {
-    //   "worktype.original": reason,
-    //   location,
-    //   worktype,
-    //   description = "",
-    // } = queryResult.outputContexts[1].parameters;
     const context = {
       name: contextToFind,
       lifespanCount: 50,
@@ -25,7 +20,6 @@ const createApplication = async (res, queryResult, user_id) => {
         ).parameters,
       },
     };
-    console.log(context);
     if (context.parameters.description === "") {
       context.parameters.description = context.parameters["worktype.original"];
     }
@@ -54,11 +48,26 @@ const createApplication = async (res, queryResult, user_id) => {
       userMessage: context.parameters.description,
     });
 
-    if (newApplication) {
+    delete context.parameters.description;
+    delete context.parameters['description.original'];
+    console.log(context);
+
+    if (
+      newApplication.yandexId === undefined ||
+      newApplication.apartmentId === undefined ||
+      newApplication.requestLocationId === undefined ||
+      newApplication.requestCategoryId === undefined ||
+      newApplication.status_id === undefined
+    ) {
+      return res.send({
+        fulfillmentText: "Ошибка создания заявки, повторите позднее",
+      });
+    } else {
       res.send({
-        fulfillmentText: `Ваша заявка отправлена!`,
+        fulfillmentText: `Ваша заявка отправлена!\nДля того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
         outputContexts: [context],
       });
+
       await newApplication.save();
 
       const applicationToSend = {
@@ -72,14 +81,13 @@ const createApplication = async (res, queryResult, user_id) => {
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
-    } else {
-      res.send({
-        fulfillmentText: "Ошибка создания заявки, повторите позднее",
-      });
+      
+      const requestId = String(response.data.requestId);
+      await Application.updateOne({_id:newApplication._id},{id:requestId});
     }
   } catch (error) {
     console.error("Ошибка:", error);
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 };
 
