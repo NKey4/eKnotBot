@@ -34,7 +34,7 @@ aliceRouter.post("/", async (req, res) => {
         // jsonAnswer.user_state_update = { fullName: null };
         intentResponse = await detectIntent("fullName", user_id);
         jsonAnswer.response = {
-          text: `С возвращением! ${state.user.fullName}\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+          text: `С возвращением! ${state.user.fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
         };
       } else {
         jsonAnswer.response = helloResponse;
