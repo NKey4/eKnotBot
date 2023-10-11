@@ -14,7 +14,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
     );
     res.send({
-      fulfillmentText: ``,
+      fulfillmentText: ` `,
     });
     const parameters = {
       city: response.data[0].city,
