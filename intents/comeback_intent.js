@@ -9,11 +9,9 @@ const comeback_intent = async (res, queryResult, user_id) => {
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
-  const { "fullName.original": fullName } =
-    queryResult.outputContexts[0].parameters;
   try {
     res.send({
-      fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `С возвращением!\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
     });
     const response = await axios.get(
       process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
@@ -33,7 +31,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       },
     };
 
-    await contextsClient.createContext(request);
+    const respons1e = await contextsClient.createContext(request);
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);

@@ -29,6 +29,7 @@ const detectIntent = async (queryText, user_id) => {
     fulfillmentText: response.queryResult.fulfillmentText,
     intentDisplayName: response.queryResult.intent.displayName,
     context: response.queryResult.outputContexts,
+    webhookStatus: response.webhookStatus,
   };
 };
 

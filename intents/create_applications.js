@@ -17,71 +17,69 @@ const createApplication = async (res, queryResult, user_id) => {
 
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    const context = {
+    const request = {
       name: contextToFind,
-      lifespanCount: 50,
-      parameters: {
-        ...queryResult.outputContexts.find(
-          (context) => context.name === contextToFind
-        ).parameters,
-      },
     };
+    const response = await contextsClient.getContext(request);
 
-    if (context.parameters.description === "") {
-      context.parameters.description = context.parameters["worktype.original"];
+    const context = response[0].parameters.fields;
+
+    if (context.description.stringValue === "") {
+      context.description.stringValue =
+        context["worktype.original"].stringValue;
     }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
     const RequestLocationId = requestLocationId.find(
-      (item) => item.predName === context.parameters.location
+      (item) => item.predName === context.location.stringValue
     )?.oid;
     const locationStandartName = requestLocationId.find(
-      (item) => item.predName === context.parameters.location
+      (item) => item.predName === context.location.stringValue
     )?.Name;
     const RequestCategoryId = requestCategoryId.find(
-      (item) => item.Name === context.parameters.worktype
+      (item) => item.Name === context.worktype.stringValue
     )?.oid;
-    console.log(context);
-    const newApplication = new Application({
-      id: " ",
+
+    const applicationToSend = {
       yandexId: user_id,
-      apartmentId: context.parameters.apartmentId,
+      apartmentId: context.apartmentId.stringValue,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
       requestSubCategoryId: "65112d8b4db28605ac132b67",
-      status_id,
-      yandexAddress: `город ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}`,
-      dataMessage: `Заявка по адресу: ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${context.parameters.worktype}`,
-      userMessage: context.parameters.description,
-    });
+      dataMessage: `Заявка по адресу: ${context.city.stringValue}, ${context.address.stringValue}, ${context.flat.stringValue}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${context.worktype.stringValue}`,
+      userMessage: context.description.stringValue,
+    };
+
     if (
-      newApplication.yandexId === undefined ||
-      newApplication.apartmentId === undefined ||
-      newApplication.requestLocationId === undefined ||
-      newApplication.requestCategoryId === undefined ||
-      newApplication.status_id === undefined
+      applicationToSend.yandexId === undefined ||
+      applicationToSend.apartmentId === undefined ||
+      applicationToSend.requestLocationId === undefined ||
+      applicationToSend.requestCategoryId === undefined
     ) {
       return res.send({
         fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });
     } else {
+      const response = await axios.post(
+        process.env.CREATE_APPLICATION_URL,
+        applicationToSend
+      );
       res.send({
-        fulfillmentText: `Ваша заявка отправлена!\nДля того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
+        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
       });
-
+      const newApplication = new Application({
+        ...applicationToSend,
+        id: " ",
+        status_id,
+        yandexAddress: `город ${context.city.stringValue}, ${context.address.stringValue}, ${context.flat.stringValue}`,
+      });
       await newApplication.save();
 
-      const applicationToSend = {
-        ...newApplication.toObject(),
-        id: undefined,
-        status_id: undefined,
-        yandexAddress: undefined,
-      };
       const parameters = {
-        apartmentId: context.parameters.apartmentId,
-        city: context.parameters.city,
-        address: context.parameters.address,
-        flat: context.parameters.flat,
+        apartmentId: context.apartmentId.stringValue,
+        city: context.city.stringValue,
+        address: context.address.stringValue,
+        flat: context.flat.stringValue,
         description: "",
       };
       const request = {
@@ -92,10 +90,6 @@ const createApplication = async (res, queryResult, user_id) => {
         },
       };
       await contextsClient.updateContext(request);
-      const response = await axios.post(
-        process.env.CREATE_APPLICATION_URL,
-        applicationToSend
-      );
 
       const requestId = String(response.data.requestId);
       await Application.updateOne(
@@ -104,8 +98,25 @@ const createApplication = async (res, queryResult, user_id) => {
       );
     }
   } catch (error) {
+    const parameters = {
+      apartmentId: context.apartmentId.stringValue,
+      city: context.city.stringValue,
+      address: context.address.stringValue,
+      flat: context.flat.stringValue,
+      description: "",
+    };
+    const request = {
+      context: {
+        name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
+        parameters: struct.encode(parameters),
+        lifespanCount: 50,
+      },
+    };
+    res.send({
+      fulfillmentText: "Дом ни к какой организации не прикреплён",
+    });
+    await contextsClient.updateContext(request);
     console.error("Ошибка:", error);
-    return res.sendStatus(500);
   }
 };
 
