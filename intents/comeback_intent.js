@@ -1,7 +1,7 @@
-const axios = require("axios");
-require("dotenv").config();
-const { struct } = require("pb-util");
 const { ContextsClient } = require("@google-cloud/dialogflow").v2;
+const axios = require("axios");
+const { struct } = require("pb-util");
+require("dotenv").config();
 
 const comeback_intent = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
@@ -12,7 +12,6 @@ const comeback_intent = async (res, queryResult, user_id) => {
   const { "fullName.original": fullName } =
     queryResult.outputContexts[0].parameters;
   try {
-
     res.send({
       fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
     });

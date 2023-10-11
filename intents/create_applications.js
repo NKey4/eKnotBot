@@ -1,13 +1,13 @@
+const { ContextsClient } = require("@google-cloud/dialogflow").v2;
+const axios = require("axios");
+const { struct } = require("pb-util");
 const Application = require("../models/application");
 const {
   STATUS,
   requestCategoryId,
   requestLocationId,
 } = require("../constants/constants");
-const axios = require("axios");
 require("dotenv").config();
-const { struct } = require("pb-util");
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
 
 const createApplication = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
