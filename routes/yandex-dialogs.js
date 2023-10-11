@@ -40,6 +40,7 @@ aliceRouter.post("/", async (req, res) => {
         jsonAnswer.response.end_session = true;
       } else if (intentResponse.intentDisplayName === "check_user_yes_code") {
         const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+        console.log(intentResponse.context);
         const foundContext = intentResponse.context.find(
           (context) => context.name === contextToFind
         );
