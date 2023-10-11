@@ -10,12 +10,12 @@ const comeback_intent = async (res, queryResult, user_id) => {
     credentials: { private_key, client_email },
   });
   try {
-    res.send({
-      fulfillmentText: `С возвращением!\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
-    });
     const response = await axios.get(
       process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
     );
+    res.send({
+      fulfillmentText: ``,
+    });
     const parameters = {
       city: response.data[0].city,
       apartmentId: response.data[0].houses[0].apartmentRoles[0].apartmentId,
@@ -31,7 +31,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       },
     };
 
-    const respons1e = await contextsClient.createContext(request);
+    await contextsClient.createContext(request);
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);

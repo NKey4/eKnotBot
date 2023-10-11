@@ -32,12 +32,12 @@ aliceRouter.post("/", async (req, res) => {
     if (!request.command) {
       if (Object.keys(state.user).length) {
         // jsonAnswer.user_state_update = { fullName: null };
-        const fullName = state.user.fullName || "";
-        intentResponse = await detectIntent(fullName, user_id);
-        jsonAnswer.response = { text: intentResponse.fulfillmentText };
+        intentResponse = await detectIntent("fullName", user_id);
+        jsonAnswer.response = {
+          text: `С возвращением! ${state.user.fullName}\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+        };
       } else {
         jsonAnswer.response = helloResponse;
-        // jsonAnswer.user_state_update = { fullName: "fullName" };
       }
     } else {
       intentResponse = await detectIntent(request.command, user_id);
@@ -53,12 +53,8 @@ aliceRouter.post("/", async (req, res) => {
           name: contextToFind,
         };
         const response = await dialogflowClient.getContext(request);
-        const foundContext = intentResponse.context.find(
-          (context) => context.name === contextToFind
-        );
-        console.log(response.parameters);
         jsonAnswer.user_state_update = {
-          fullName: response.parameters.fields.fullName.stringValue,
+          fullName: response[0].parameters.fields.fullName.stringValue,
         };
       }
     }
