@@ -16,7 +16,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
     });
     const response = await axios.get(
-      process.env.GET_ADDRESS_URL + "?YandexId=" + `${1111}`
+      process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
     );
     const parameters = {
       city: response.data[0].city,
@@ -33,8 +33,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
       },
     };
 
-    const king = await contextsClient.createContext(request);
-    console.log(king[0].parameters.fields);
+    await contextsClient.createContext(request);
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);

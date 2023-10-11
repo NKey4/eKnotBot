@@ -44,7 +44,7 @@ const createApplication = async (res, queryResult, user_id) => {
     console.log(context);
     const newApplication = new Application({
       id: " ",
-      yandexId: 1111,
+      yandexId: user_id,
       apartmentId: context.parameters.apartmentId,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
@@ -61,7 +61,6 @@ const createApplication = async (res, queryResult, user_id) => {
       newApplication.requestCategoryId === undefined ||
       newApplication.status_id === undefined
     ) {
-      console.log(newApplication);
       return res.send({
         fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });

@@ -13,7 +13,6 @@ const get_one_application = async (res, queryResult, user_id) => {
 
     const status = queryResult.outputContexts[0].parameters["status"];
     const statusId = STATUS.find((status_id) => status_id.key === status)?.oid;
-    console.log(statusId);
     const statusName = STATUS.find(
       (status_id) => status_id.key === status
     )?.Name;
