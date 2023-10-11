@@ -11,7 +11,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnly = format_code(code);
   try {
     const data = {
-      yandexId: "1111",
+      yandexId: user_id,
       userName: digitsOnlyPhoneNum,
       code: digitsOnly,
     };
@@ -19,7 +19,7 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     const fullName = response.data.fullName;
     if (response.data.fullName) {
       const response = await axios.get(
-        process.env.GET_ADDRESS_URL + "?YandexId=1111"
+        process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
       );
       const context = {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,

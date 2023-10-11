@@ -23,7 +23,7 @@ const get_one_application = async (res, queryResult, user_id) => {
     application.forEach((app) => {
       if (app.status_id === statusId) {
         const key = usual_number(app.id);
-        fulfillmentText += `Заявка под номером ${key}, со статусом: ${statusName}, по адресу: ${app.yandexAddress}\n.`;
+        fulfillmentText += `Заявка под номером ${key}, со статусом: ${statusName}.`;
       }
     });
 

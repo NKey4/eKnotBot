@@ -14,6 +14,7 @@ const createApplication = async (res, queryResult, user_id) => {
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
+
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
     const context = {
@@ -40,10 +41,10 @@ const createApplication = async (res, queryResult, user_id) => {
     const RequestCategoryId = requestCategoryId.find(
       (item) => item.Name === context.parameters.worktype
     )?.oid;
-
+    console.log(context);
     const newApplication = new Application({
       id: " ",
-      yandexId: "1111",
+      yandexId: 1111,
       apartmentId: context.parameters.apartmentId,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
@@ -53,7 +54,6 @@ const createApplication = async (res, queryResult, user_id) => {
       dataMessage: `Заявка по адресу: ${context.parameters.city}, ${context.parameters.address}, ${context.parameters.flat}\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${context.parameters.worktype}`,
       userMessage: context.parameters.description,
     });
-    console.log(newApplication);
     if (
       newApplication.yandexId === undefined ||
       newApplication.apartmentId === undefined ||
@@ -61,8 +61,9 @@ const createApplication = async (res, queryResult, user_id) => {
       newApplication.requestCategoryId === undefined ||
       newApplication.status_id === undefined
     ) {
+      console.log(newApplication);
       return res.send({
-        fulfillmentText: "Ошибка создания заявки, повторите позднее",
+        fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });
     } else {
       res.send({
@@ -78,6 +79,10 @@ const createApplication = async (res, queryResult, user_id) => {
         yandexAddress: undefined,
       };
       const parameters = {
+        apartmentId: context.parameters.apartmentId,
+        city: context.parameters.city,
+        address: context.parameters.address,
+        flat: context.parameters.flat,
         description: "",
       };
       const request = {

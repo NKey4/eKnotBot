@@ -13,7 +13,7 @@ const delete_applications = async (res, queryResult, user_id) => {
 
     let digitsOnly = numberApp.replace(/\D/g, "");
     if (digitsOnly.length === 4) {
-      digitsOnly = digitsOnly.replace(/(\d{2})(\d{2})/, "$1-$2");
+      digitsOnly = digitsOnly.replace(/(\d{2})(\d{2})/, "$1$2");
     } else {
       return res.send({ fulfillmentText: "Некорректный номер заявки." });
     }
