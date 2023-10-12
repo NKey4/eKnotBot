@@ -16,7 +16,7 @@ const get_specific_application = async (res, queryResult, user_id) => {
     if (Number.isInteger(number)) {
       number = format_number_app(number);
     } else {
-      const data = application.map((app) => app.id);
+      const data = application.map((app) => app.yandexId);
       if (number === "last") {
         number = format_number_app(data.length);
       } else if (number === "penultimate") {
