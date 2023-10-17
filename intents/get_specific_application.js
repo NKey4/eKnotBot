@@ -18,7 +18,6 @@ const get_specific_application = async (res, queryResult, user_id) => {
       appResult = application.find((app) => app.id === number);
     } else {
       const data = application.map((app) => app.yandexId);
-      console.log(data);
       if (number === "last" || data.length === 1) {
         number = data.length-1;
         appResult = application[number];
