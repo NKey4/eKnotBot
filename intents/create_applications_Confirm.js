@@ -14,11 +14,11 @@ const create_applications_Confirm = async (res, queryResult, user_id) => {
   location = location.toLowerCase();
   if (description === "") {
     res.send({
-      fulfillmentText: `Вы желаете подать заявку, что у Вас ${location} ${reason}. По адресу: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nЕсли возникла какая-то неточность в заявке, то попробуйте заново описать проблему.`,
+      fulfillmentText: `Желаете подать заявку, что у Вас ${location} ${reason}. Адрес: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`,
     });
   } else {
     res.send({
-      fulfillmentText: `Вы желаете подать заявку, что у Вас ${location} ${reason}.Подробности: ${description}. По адресу: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nЕсли возникла какая-то неточность в заявке, то попробуйте заново описать проблему.`,
+      fulfillmentText: `Желаете подать заявку, что у Вас ${location} ${reason}. Подробности: ${description}. Адрес: город ${city}, ${address}, ${flat}. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`,
     });
   }
 };
