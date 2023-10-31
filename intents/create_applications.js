@@ -60,13 +60,13 @@ const createApplication = async (res, queryResult, user_id) => {
         fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });
     } else {
+      res.send({
+        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
+      });
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
-      res.send({
-        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
-      });
       const newApplication = new Application({
         ...applicationToSend,
         id: " ",
