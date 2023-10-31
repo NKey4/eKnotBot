@@ -10,21 +10,24 @@ const get_specific_application = async (res, queryResult, user_id) => {
     const application = await Application.find({ yandexId: user_id });
 
     if (!application || application.length === 0) {
-      return res.sendStatus(400);
+      return res.sendStatus(404);
     }
-
+    let appResult = null;
     if (Number.isInteger(number)) {
       number = format_number_app(number);
+      appResult = application.find((app) => app.id === number);
     } else {
       const data = application.map((app) => app.yandexId);
-      if (number === "last") {
-        number = format_number_app(data.length);
-      } else if (number === "penultimate") {
-        number = format_number_app(data.length - 1);
+      if (number === "last" || data.length === 1) {
+        number = data.length-1;
+        appResult = application[number];
+      } else if (number === "penultimate" && data.length !== 1) {
+        number = data.length - 2;
+        appResult = application[number];
       }
     }
-
-    const appResult = application.find((app) => app.id === number);
+  
+    
 
     if (!appResult) {
       return res.sendStatus(400);
