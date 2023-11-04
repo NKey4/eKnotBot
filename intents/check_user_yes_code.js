@@ -5,6 +5,9 @@ const {
   format_number_to_770,
   format_code,
 } = require("../intents/format_number");
+const { help, hello } = require("../constants/synonyms");
+
+const { sample } = require("lodash");
 require("dotenv").config();
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
@@ -42,7 +45,9 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     };
     contextsClient.createContext(request);
     res.send({
-      fulfillmentText: `Приветствую Вас, ${fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+      fulfillmentText: `${sample(hello)} ${fullName.split(" ")[1]}.\n ${sample(
+        help
+      )}`,
     });
 
     const response_get_address = await axios.get(

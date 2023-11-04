@@ -2,6 +2,8 @@ const express = require("express");
 const { ContextsClient } = require("@google-cloud/dialogflow").v2beta1;
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
+const { sample } = require("lodash");
+const { comeback, help } = require("../constants/synonyms");
 require("dotenv").config();
 
 const helloResponse = {
@@ -34,7 +36,9 @@ aliceRouter.post("/", async (req, res) => {
         // jsonAnswer.user_state_update = { fullName: null };
         intentResponse = await detectIntent("fullName", user_id);
         jsonAnswer.response = {
-          text: `С возвращением! ${state.user.fullName}.\n Для того чтобы ознакомиться с функциями бота произнесите или напишите "Помощь".`,
+          text: `${sample(comeback)} ${
+            state.user.fullName.split(" ")[1]
+          }.\n ${sample(help)}`,
         };
       } else {
         jsonAnswer.response = helloResponse;
