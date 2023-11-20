@@ -5,7 +5,6 @@ const {
   format_number_to_770,
   format_code,
 } = require("../intents/format_number");
-const { help, hello } = require("../constants/synonyms");
 
 const { sample } = require("lodash");
 require("dotenv").config();
@@ -44,10 +43,18 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       },
     };
     contextsClient.createContext(request);
+
+    const phrases = await Phrase.find({}).exec({ type: "hello" });
+
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+
+    const modifiedText = randomPhrase.text.replace(
+      /fullName/g,
+      fullName.split(" ")[1]
+    );
+
     res.send({
-      fulfillmentText: `${sample(hello)} ${fullName.split(" ")[1]}.\n ${sample(
-        help
-      )}`,
+      fulfillmentText: modifiedText,
     });
 
     const response_get_address = await axios.get(

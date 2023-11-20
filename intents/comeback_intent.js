@@ -1,6 +1,8 @@
 const { ContextsClient } = require("@google-cloud/dialogflow").v2;
 const axios = require("axios");
 const { struct } = require("pb-util");
+const Phrase = require("../models/phrase");
+
 require("dotenv").config();
 
 const comeback_intent = async (res, queryResult, user_id) => {
@@ -13,8 +15,18 @@ const comeback_intent = async (res, queryResult, user_id) => {
     const response = await axios.get(
       process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
     );
+
+    const phrases = await Phrase.find({}).exec({ type: "comeback" });
+
+    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+
+    const modifiedText = randomPhrase.text.replace(
+      /fullName/g,
+      queryResult.queryText.replace("fullName", "")
+    );
+
     res.send({
-      fulfillmentText: ` `,
+      fulfillmentText: modifiedText,
     });
     const parameters = {
       city: response.data[0].city,

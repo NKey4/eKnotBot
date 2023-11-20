@@ -3,22 +3,7 @@ const { ContextsClient } = require("@google-cloud/dialogflow").v2beta1;
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
 const { sample } = require("lodash");
-const { comeback, help } = require("../constants/synonyms");
 require("dotenv").config();
-
-const helloResponse = {
-  text: "Здравствуйте, если Вы тут впервые, то Вам необходимо скачать наше приложение в Play Market. Далее включить разрешение в настройках. После выполнения предыдущих действий, введите сюда свой номер телефона",
-  card: {
-    type: "BigImage",
-    image_id: "1533899/4ac3620447eeaa50946a",
-    title: "Клик",
-    button: {
-      title: "e-Knot",
-      url: "https://play.google.com/store/apps/details?id=me.eknot&hl=ru&gl=US",
-    },
-  },
-  end_session: false,
-};
 
 aliceRouter.post("/", async (req, res) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
@@ -26,22 +11,42 @@ aliceRouter.post("/", async (req, res) => {
     credentials: { private_key, client_email },
   });
   try {
-    const { request, session, state, version } = req.body;
+    const { request, session, state, version, meta } = req.body;
     const { user_id } = session.user;
     const jsonAnswer = { version, session };
     let intentResponse;
 
+    const userAgent = meta && meta.client_id;
+    let link;
+
+    if (userAgent.includes("Apple")) {
+      link =
+        "https://apps.apple.com/kz/app/eknot-%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%81%D0%B8-%D0%B8-%D0%BF%D1%82/id1516986646";
+    } else {
+      link = "https://play.google.com/store/apps/details?id=me.eknot";
+    }
+
     if (!request.command) {
       if (Object.keys(state.user).length) {
         // jsonAnswer.user_state_update = { fullName: null };
-        intentResponse = await detectIntent("fullName", user_id);
+        intentResponse = await detectIntent(`fullName ${state.user}`, user_id);
         jsonAnswer.response = {
-          text: `${sample(comeback)} ${
-            state.user.fullName.split(" ")[1]
-          }.\n ${sample(help)}`,
+          text: intentResponse.fulfillmentText,
         };
       } else {
-        jsonAnswer.response = helloResponse;
+        jsonAnswer.response = {
+          text: (await detectIntent("Привет", user_id)).fulfillmentText,
+          card: {
+            type: "BigImage",
+            image_id: "1533899/4ac3620447eeaa50946a",
+            title: "Клик",
+            button: {
+              title: "e-Knot",
+              url: link,
+            },
+          },
+          end_session: false,
+        };
       }
     } else {
       intentResponse = await detectIntent(request.command, user_id);
