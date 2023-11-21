@@ -2,7 +2,6 @@ const express = require("express");
 const { ContextsClient } = require("@google-cloud/dialogflow").v2beta1;
 const aliceRouter = express.Router();
 const detectIntent = require("../df");
-const { sample } = require("lodash");
 require("dotenv").config();
 
 aliceRouter.post("/", async (req, res) => {

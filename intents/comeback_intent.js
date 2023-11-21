@@ -19,7 +19,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
 
     const modifiedText = randomPhrase.text.replace(
-      /fullName/,
+      /fullName/g,
       queryResult.queryText.replace("fullName", "")
     );
     res.send({
