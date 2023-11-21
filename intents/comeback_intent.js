@@ -2,7 +2,6 @@ const { ContextsClient } = require("@google-cloud/dialogflow").v2;
 const axios = require("axios");
 const { struct } = require("pb-util");
 const Phrase = require("../models/phrase");
-
 require("dotenv").config();
 
 const comeback_intent = async (res, queryResult, user_id) => {
@@ -17,14 +16,12 @@ const comeback_intent = async (res, queryResult, user_id) => {
     );
 
     const phrases = await Phrase.find({}).exec({ type: "comeback" });
-
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
 
     const modifiedText = randomPhrase.text.replace(
-      /fullName/g,
+      /fullName/,
       queryResult.queryText.replace("fullName", "")
     );
-
     res.send({
       fulfillmentText: modifiedText,
     });
@@ -45,7 +42,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
 
     await contextsClient.createContext(request);
   } catch (error) {
-    console.error("Ошибка сервера (check_user_yes_code):", error);
+    console.error("Ошибка сервера (comeback_intent):", error);
     return res.sendStatus(500);
   }
 };

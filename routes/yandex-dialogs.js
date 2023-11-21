@@ -29,7 +29,10 @@ aliceRouter.post("/", async (req, res) => {
     if (!request.command) {
       if (Object.keys(state.user).length) {
         // jsonAnswer.user_state_update = { fullName: null };
-        intentResponse = await detectIntent(`fullName ${state.user}`, user_id);
+        intentResponse = await detectIntent(
+          `fullName ${state.user.fullName}`,
+          user_id
+        );
         jsonAnswer.response = {
           text: intentResponse.fulfillmentText,
         };

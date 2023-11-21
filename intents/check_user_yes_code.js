@@ -5,8 +5,6 @@ const {
   format_number_to_770,
   format_code,
 } = require("../intents/format_number");
-
-const { sample } = require("lodash");
 require("dotenv").config();
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
