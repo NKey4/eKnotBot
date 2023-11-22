@@ -1,5 +1,6 @@
 const { ContextsClient } = require("@google-cloud/dialogflow").v2;
 const axios = require("axios");
+const Phrase = require("../models/phrase");
 const { struct } = require("pb-util");
 const {
   format_number_to_770,

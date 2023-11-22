@@ -47,7 +47,6 @@ aliceRouter.post("/", async (req, res) => {
               url: link,
             },
           },
-          end_session: false,
         };
       }
     } else {

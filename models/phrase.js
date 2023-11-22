@@ -5,7 +5,9 @@ const Schema = mongoose.Schema;
 const phraseSchema = new Schema(
   {
     text: String,
+    type: String,
   },
+
   {
     versionKey: false,
   }
