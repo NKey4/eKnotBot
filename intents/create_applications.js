@@ -98,25 +98,9 @@ const createApplication = async (res, queryResult, user_id) => {
       );
     }
   } catch (error) {
-    const parameters = {
-      apartmentId: context.apartmentId.stringValue,
-      city: context.city.stringValue,
-      address: context.address.stringValue,
-      flat: context.flat.stringValue,
-      description: "",
-    };
-    const request = {
-      context: {
-        name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
-        parameters: struct.encode(parameters),
-        lifespanCount: 50,
-      },
-    };
     res.send({
       fulfillmentText: "Дом ни к какой организации не прикреплён",
     });
-    await contextsClient.updateContext(request);
-    console.error("Ошибка:", error);
   }
 };
 
