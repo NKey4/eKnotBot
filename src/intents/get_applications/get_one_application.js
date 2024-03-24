@@ -1,8 +1,8 @@
 // Импортируем необходимые модули и функции
-import Application from "../models/application.js";
-import { STATUS } from "../constants/constants.js";
-import { usual_number } from "../utils/format_number.js";
-import dotenv from "dotenv";
+import dotenv from "dotenv"
+import { STATUS } from "../../constants/constants.js"
+import Application from "../../models/application.js"
+import { usual_number } from "../../utils/format_number.js"
 
 dotenv.config();
 

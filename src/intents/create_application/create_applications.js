@@ -2,8 +2,8 @@
 import { v2 as dialogflow } from '@google-cloud/dialogflow';
 import axios from 'axios';
 import { struct } from 'pb-util';
-import Application from '../models/application.js';
-import { STATUS, requestCategoryId, requestLocationId } from '../constants/constants.js';
+import Application from '../../models/application.js';
+import { STATUS, requestCategoryId, requestLocationId } from '../../constants/constants.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

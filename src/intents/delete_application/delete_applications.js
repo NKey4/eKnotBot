@@ -1,6 +1,6 @@
 // Импортируем необходимые модули
-import dotenv from 'dotenv';
-import Application from '../models/application.js';
+import dotenv from 'dotenv'
+import Application from '../../models/application.js'
 
 dotenv.config();
 

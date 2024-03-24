@@ -1,23 +1,21 @@
 // Импортируем необходимые зависимости
-import express from 'express';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv'
+import express from 'express'
 
 // Инициализируем переменные окружения
 dotenv.config();
 
 // Импортируем интенты как ES Modules
-import application from '../intents/application.js';
-import check_user from '../intents/check_user.js';
-import create_applications from '../intents/create_applications.js';
-import create_applications_Confirm from '../intents/create_applications_Confirm.js';
-import check_user_yes_code from '../intents/check_user_yes_code.js';
-import comeback_intent from '../intents/comeback_intent.js';
-import delete_applications from '../intents/delete_applications.js';
-import get_debt from '../intents/get_debt.js';
-import get_applications from '../intents/get_applications.js';
-import get_one_application from '../intents/get_one_application.js';
-import get_specific_application from '../intents/get_specific_application.js';
-import get_last_application from '../intents/get_specific_application.js';
+import application from '../intents/application.js'
+import create_applications from '../intents/create_application/create_applications.js'
+import create_applications_Confirm from '../intents/create_application/create_applications_Confirm.js'
+import delete_applications from '../intents/delete_application/delete_applications.js'
+import get_applications from '../intents/get_applications/get_applications.js'
+import get_one_application from '../intents/get_applications/get_one_application.js'
+import get_specific_application from '../intents/get_applications/get_specific_application.js'
+import check_user from '../intents/user/check_user.js'
+import check_user_yes_code from '../intents/user/check_user_yes_code.js'
+import comeback_intent from '../intents/user/comeback_intent.js'
 
 // Объединяем интенты в объект
 const intents = {
@@ -28,7 +26,6 @@ const intents = {
   check_user_yes_code,
   comeback_intent,
   delete_applications_select_number_yes: delete_applications,
-  get_debt,
   get_applications,
   get_one_application,
   get_specific_application,

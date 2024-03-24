@@ -1,9 +1,9 @@
 import { v2 as dialogflow } from '@google-cloud/dialogflow';
 import axios from 'axios';
-import Phrase from '../models/phrase.js';
-import User from '../models/user.js';
+import Phrase from '../../models/phrase.js';
+import User from '../../models/user.js';
 import { struct } from 'pb-util';
-import { format_number_to_770, format_code } from '../utils/format_number.js';
+import { format_number_to_770, format_code } from '../../utils/format_number.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -58,7 +58,6 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
 
     res.send({ fulfillmentText: modifiedText });
 
-    // The code to fetch address and set parameters might need to be updated or removed depending on your application logic
   } catch (error) {
     console.error("Ошибка сервера (check_user_yes_code):", error);
     return res.sendStatus(500);

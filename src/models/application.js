@@ -38,6 +38,7 @@ const applicationSchema = new mongoose.Schema(
     userMessage: String,
   },
   {
+    timestamps: true,
     versionKey: false,
   }
 );

@@ -1,8 +1,8 @@
-import { v2 as dialogflow } from '@google-cloud/dialogflow';
-import axios from 'axios';
-import { struct } from 'pb-util';
-import Phrase from '../models/phrase.js';
-import dotenv from 'dotenv';
+import { v2 as dialogflow } from '@google-cloud/dialogflow'
+import axios from 'axios'
+import dotenv from 'dotenv'
+import { struct } from 'pb-util'
+import Phrase from '../../models/phrase.js'
 
 dotenv.config();
 

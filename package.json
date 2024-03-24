@@ -2,13 +2,13 @@
   "name": "alicebot",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "./src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon main.js",
-    "start": "node main.js"
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
-  "author": "",
+  "author": "ZEN",
   "license": "ISC",
   "dependencies": {
     "@google-cloud/dialogflow": "^5.8.0",
