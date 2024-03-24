@@ -1,19 +1,20 @@
-const dialogflow = require("@google-cloud/dialogflow").v2;
-require("dotenv").config();
+// Импортируем зависимости
+import dialogflow from "@google-cloud/dialogflow";
+import dotenv from "dotenv";
 
-const { project_id, private_key, client_email } = JSON.parse(
-  process.env.CREDENTIALS
-);
+dotenv.config();
 
-const sessionClient = new dialogflow.SessionsClient({
+const { SessionsClient } = dialogflow.v2;
+
+// Деструктурируем переменные окружения
+const { project_id, private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+
+const sessionClient = new SessionsClient({
   credentials: { private_key, client_email },
 });
 
 const detectIntent = async (queryText, user_id) => {
-  const sessionPath = sessionClient.projectAgentSessionPath(
-    project_id,
-    user_id
-  );
+  const sessionPath = sessionClient.projectAgentSessionPath(project_id, user_id);
   const request = {
     session: sessionPath,
     queryInput: {
@@ -33,4 +34,4 @@ const detectIntent = async (queryText, user_id) => {
   };
 };
 
-module.exports = detectIntent;
+export default detectIntent;

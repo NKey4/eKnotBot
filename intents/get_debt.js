@@ -1,5 +1,7 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const get_debt = async (res, queryResult, user_id) => {};
 
-module.exports = get_debt;
+export default get_debt;

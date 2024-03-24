@@ -1,3 +1,5 @@
+// Определяем функции форматирования номеров
+
 const format_number = (number) => {
   let digitsOnly = number.replace(/\D/g, "");
 
@@ -24,10 +26,10 @@ const format_number_to_770 = (number) => {
 };
 
 const format_number_app = (number) => {
-  return (appNumber = number
+  return number
     .toString()
     .padStart(4, "0")
-    .replace(/(\d{2})(\d{2})/, "$1$2"));
+    .replace(/(\d{2})(\d{2})/, "$1$2");
 };
 
 const format_code = (number) => {
@@ -38,10 +40,6 @@ const format_code = (number) => {
 const usual_number = (number) => {
   return number.replace(/\D/g, "").replace(/^0+/, "");
 };
-module.exports = {
-  format_number,
-  format_number_app,
-  usual_number,
-  format_number_to_770,
-  format_code,
-};
+
+// Экспортируем функции
+export { format_number, format_number_to_770, format_number_app, usual_number, format_code };

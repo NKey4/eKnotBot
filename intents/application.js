@@ -1,17 +1,15 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
 
-const application = async (res, queryResult, user_id) => {
+dotenv.config();
+
+const application = async (res, queryResult, user_id, user) => {
   try {
     const userAddress = user.address;
     if (Array.isArray(userAddress) && userAddress.length > 1) {
       let message = "Выберите адрес:\n";
-      for (let i = 0; i < userAddress.length; i++) {
-        if (i + 1 === userAddress.length) {
-          message += `${i + 1}. ${userAddress[i]}.`;
-        } else {
-          message += `${i + 1}. ${userAddress[i]};\n`;
-        }
-      }
+      userAddress.forEach((address, index) => {
+        message += `${index + 1}. ${address}${index + 1 === userAddress.length ? '.' : ';\n'}`;
+      });
       res.send({ fulfillmentText: message });
     } else {
       res.send({
@@ -24,4 +22,4 @@ const application = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = application;
+export default application;

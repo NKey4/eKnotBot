@@ -1,32 +1,36 @@
-const path = require("path");
-const fs = require("fs");
-const request = require("request-promise");
-const dialogs_config = require("./configs/dialogs");
+import path from 'path';
+import { promises as fsPromises } from 'fs';
+import axios from 'axios';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import dialogs_config from './configs/dialogs.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 (async () => {
-  const result_dir = path.resolve(__dirname, "./images/result"),
-    images = fs
-      .readdirSync(result_dir)
-      .filter((name) => name.search(/\.(gif|jpg|jpeg|tiff|png|bmp)$/i) !== -1);
-  for (let image_name of images) {
-    const buffer = fs.readFileSync(`${result_dir}/${image_name}`);
+  try {
+    const result_dir = path.resolve(__dirname, "./images/result"),
+          images = await fsPromises.readdir(result_dir);
+    const imageFiles = images.filter((name) => name.match(/\.(gif|jpg|jpeg|tiff|png|bmp)$/i));
 
-    let result = await request.post({
-      url: `https://dialogs.yandex.net/api/v1/skills/${dialogs_config.skill_id}/images`,
-      headers: {
-        Authorization: `OAuth ${dialogs_config.token}`,
-      },
-      formData: {
-        file: {
-          value: buffer,
-          options: {
-            filename: image_name,
-          },
+    for (let image_name of imageFiles) {
+      const imagePath = `${result_dir}/${image_name}`;
+      const buffer = await fsPromises.readFile(imagePath);
+
+      const formData = new FormData();
+      formData.append('file', buffer, image_name);
+
+      const result = await axios.post(`https://dialogs.yandex.net/api/v1/skills/${dialogs_config.skill_id}/images`, formData, {
+        headers: {
+          'Authorization': `OAuth ${dialogs_config.token}`,
+          ...formData.getHeaders(),
         },
-      },
-      json: true,
-    });
+      });
 
-    console.log({ [image_name]: result });
+      console.log({ [image_name]: result.data });
+    }
+  } catch (error) {
+    console.error("Error uploading images:", error);
   }
 })();

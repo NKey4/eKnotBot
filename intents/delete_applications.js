@@ -1,10 +1,12 @@
-require("dotenv").config();
-const Application = require("../models/application");
+// Импортируем необходимые модули
+import dotenv from 'dotenv';
+import Application from '../models/application.js';
+
+dotenv.config();
 
 const delete_applications = async (res, queryResult, user_id) => {
   try {
     const numberApp = queryResult.outputContexts[0].parameters["number"];
-
     const app = await Application.findOne({ yandexId: user_id });
 
     if (!app) {
@@ -20,12 +22,12 @@ const delete_applications = async (res, queryResult, user_id) => {
 
     // Обновление статуса заявки
     await Application.findOneAndUpdate({ yandexId: user_id }, { status: "6" });
-
-    res.send({ fulfillmentText: `Заявка под №${numberApp} отменена` });
+    res.send({ fulfillmentText: `Заявка под №${numberApp} отменена.` });
   } catch (error) {
     console.error("Ошибка при удалении заявки из базы данных:", error);
     res.send({ fulfillmentText: "Приношу извинения. Ошибка сервера." });
   }
 };
 
-module.exports = delete_applications;
+// Экспортируем функцию
+export default delete_applications;

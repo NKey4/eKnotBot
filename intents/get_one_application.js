@@ -1,7 +1,10 @@
-const Application = require("../models/application");
-const { STATUS } = require("../constants/constants");
-const { usual_number } = require("../intents/format_number");
-require("dotenv").config();
+// Импортируем необходимые модули и функции
+import Application from "../models/application.js";
+import { STATUS } from "../constants/constants.js";
+import { usual_number } from "../utils/format_number.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const get_one_application = async (res, queryResult, user_id) => {
   try {
@@ -36,4 +39,5 @@ const get_one_application = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = get_one_application;
+// Экспортируем функцию
+export default get_one_application;

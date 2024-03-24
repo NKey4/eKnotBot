@@ -1,13 +1,14 @@
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
-const axios = require("axios");
-const { struct } = require("pb-util");
-const Application = require("../models/application");
-const {
-  STATUS,
-  requestCategoryId,
-  requestLocationId,
-} = require("../constants/constants");
-require("dotenv").config();
+// Импорт необходимых модулей
+import { v2 as dialogflow } from '@google-cloud/dialogflow';
+import axios from 'axios';
+import { struct } from 'pb-util';
+import Application from '../models/application.js';
+import { STATUS, requestCategoryId, requestLocationId } from '../constants/constants.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const { ContextsClient } = dialogflow;
 
 const createApplication = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
@@ -17,28 +18,21 @@ const createApplication = async (res, queryResult, user_id) => {
 
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    const request = {
+    const requestContext = {
       name: contextToFind,
     };
-    const response = await contextsClient.getContext(request);
+    const response = await contextsClient.getContext(requestContext);
 
     const context = response[0].parameters.fields;
 
     if (context.description.stringValue === "") {
-      context.description.stringValue =
-        context["worktype.original"].stringValue;
+      context.description.stringValue = context["worktype.original"].stringValue;
     }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
-    const RequestLocationId = requestLocationId.find(
-      (item) => item.predName === context.location.stringValue
-    )?.oid;
-    const locationStandartName = requestLocationId.find(
-      (item) => item.predName === context.location.stringValue
-    )?.Name;
-    const RequestCategoryId = requestCategoryId.find(
-      (item) => item.Name === context.worktype.stringValue
-    )?.oid;
+    const RequestLocationId = requestLocationId.find((item) => item.predName === context.location.stringValue)?.oid;
+    const locationStandartName = requestLocationId.find((item) => item.predName === context.location.stringValue)?.Name;
+    const RequestCategoryId = requestCategoryId.find((item) => item.Name === context.worktype.stringValue)?.oid;
 
     const applicationToSend = {
       yandexId: user_id,
@@ -50,12 +44,7 @@ const createApplication = async (res, queryResult, user_id) => {
       userMessage: context.description.stringValue,
     };
 
-    if (
-      applicationToSend.yandexId === undefined ||
-      applicationToSend.apartmentId === undefined ||
-      applicationToSend.requestLocationId === undefined ||
-      applicationToSend.requestCategoryId === undefined
-    ) {
+    if (!applicationToSend.yandexId || !applicationToSend.apartmentId || !applicationToSend.requestLocationId || !applicationToSend.requestCategoryId) {
       return res.send({
         fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });
@@ -63,14 +52,11 @@ const createApplication = async (res, queryResult, user_id) => {
       res.send({
         fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
       });
-      const response = await axios.post(
-        process.env.CREATE_APPLICATION_URL,
-        applicationToSend
-      );
+      const responsePost = await axios.post(process.env.CREATE_APPLICATION_URL, applicationToSend);
       const newApplication = new Application({
         ...applicationToSend,
         id: " ",
-        status_id,
+        status_id: status_id,
         yandexAddress: `город ${context.city.stringValue}, ${context.address.stringValue}, ${context.flat.stringValue}`,
       });
       await newApplication.save();
@@ -82,26 +68,22 @@ const createApplication = async (res, queryResult, user_id) => {
         flat: context.flat.stringValue,
         description: "",
       };
-      const request = {
+      const updateRequest = {
         context: {
           name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
           parameters: struct.encode(parameters),
           lifespanCount: 50,
         },
       };
-      await contextsClient.updateContext(request);
+      await contextsClient.updateContext(updateRequest);
 
-      const requestId = String(response.data.requestId);
-      await Application.updateOne(
-        { _id: newApplication._id },
-        { id: requestId }
-      );
+      const requestId = String(responsePost.data.requestId);
+      await Application.updateOne({ _id: newApplication._id }, { id: requestId });
     }
   } catch (error) {
-    res.send({
-      fulfillmentText: "Дом ни к какой организации не прикреплён",
-    });
+    console.error(error);
+    res.send({ fulfillmentText: "Дом ни к какой организации не прикреплён" });
   }
 };
 
-module.exports = createApplication;
+export default createApplication;

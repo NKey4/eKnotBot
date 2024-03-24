@@ -1,7 +1,10 @@
-const path = require("path");
-const fs = require("fs");
-const jimp = require("jimp");
-const sizes = require("../configs/sizes.json");
+import path from 'path';
+import fs from 'fs';
+import jimp from 'jimp';
+import sizes from '../configs/sizes.json';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const defaultDir = path.resolve(__dirname, "./images/default");
 const resultDir = path.resolve(__dirname, "./images/result");
@@ -20,10 +23,7 @@ async function processImage(imageName) {
 
     image.contain(size.width, size.height).background(0xffffffff).normalize();
 
-    fs.writeFileSync(
-      path.join(resultDir, newImageName),
-      await image.getBufferAsync(jimp.AUTO)
-    );
+    await image.writeAsync(path.join(resultDir, newImageName));
 
     console.log(newImageName);
   }

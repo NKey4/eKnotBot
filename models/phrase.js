@@ -1,8 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-const phraseSchema = new Schema(
+const phraseSchema = new mongoose.Schema(
   {
     text: String,
     type: String,
@@ -13,6 +11,4 @@ const phraseSchema = new Schema(
   }
 );
 
-const Phrase = mongoose.model("Phrase", phraseSchema);
-
-module.exports = Phrase;
+export default mongoose.model("Phrase", phraseSchema);

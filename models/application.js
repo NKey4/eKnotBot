@@ -1,8 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-const applicationSchema = new Schema(
+const applicationSchema = new mongoose.Schema(
   {
     id: {
       type: String,
@@ -44,6 +42,4 @@ const applicationSchema = new Schema(
   }
 );
 
-const Application = mongoose.model("Application", applicationSchema);
-
-module.exports = Application;
+export default mongoose.model("Application", applicationSchema);

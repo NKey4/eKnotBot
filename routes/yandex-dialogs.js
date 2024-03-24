@@ -1,10 +1,15 @@
-const express = require("express");
-const { ContextsClient } = require("@google-cloud/dialogflow").v2beta1;
-const aliceRouter = express.Router();
-const detectIntent = require("../df");
-require("dotenv").config();
+// Импортируем зависимости
+import express from 'express';
+import dialogflow from '@google-cloud/dialogflow';
+import detectIntent from '../df.js'; // Предполагаем, что 'df' тоже уже преобразован в модуль
+import dotenv from 'dotenv';
 
-aliceRouter.post("/", async (req, res) => {
+dotenv.config();
+
+const { ContextsClient } = dialogflow.v2beta1;
+const aliceRouter = express.Router();
+
+aliceRouter.post('/', async (req, res) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
   const dialogflowClient = new ContextsClient({
     credentials: { private_key, client_email },
@@ -19,8 +24,7 @@ aliceRouter.post("/", async (req, res) => {
     let link;
 
     if (userAgent.includes("Apple")) {
-      link =
-        "https://apps.apple.com/kz/app/eknot-%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%81%D0%B8-%D0%B8-%D0%BF%D1%82/id1516986646";
+      link = "https://apps.apple.com/kz/app/eknot-%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%81%D0%B8-%D0%B8-%D0%BF%D1%82/id1516986646";
     } else {
       link = "https://play.google.com/store/apps/details?id=me.eknot";
     }
@@ -28,10 +32,7 @@ aliceRouter.post("/", async (req, res) => {
     if (!request.command) {
       if (Object.keys(state.user).length) {
         jsonAnswer.user_state_update = { fullName: null };
-        intentResponse = await detectIntent(
-          `fullName ${state.user.fullName}`,
-          user_id
-        );
+        intentResponse = await detectIntent(`fullName ${state.user.fullName}`, user_id);
         jsonAnswer.response = {
           text: intentResponse.fulfillmentText,
         };
@@ -54,10 +55,7 @@ aliceRouter.post("/", async (req, res) => {
       jsonAnswer.response = { text: intentResponse.fulfillmentText };
       if (intentResponse.intentDisplayName === "Exit") {
         jsonAnswer.response.end_session = true;
-      } else if (
-        intentResponse.intentDisplayName === "check_user_yes_code" &&
-        intentResponse.webhookStatus.code === 0
-      ) {
+      } else if (intentResponse.intentDisplayName === "check_user_yes_code" && intentResponse.webhookStatus.code === 0) {
         const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
         const request = {
           name: contextToFind,
@@ -76,4 +74,5 @@ aliceRouter.post("/", async (req, res) => {
   }
 });
 
-module.exports = aliceRouter;
+// Экспортируем роутер
+export default aliceRouter;

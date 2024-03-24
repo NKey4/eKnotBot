@@ -1,4 +1,4 @@
-const STATUS = [
+export const STATUS = [
   { key: "1", Name: "Новая", oid: "60e80f65e4e96aab27b91859" },
   { key: "2", Name: "В работе", oid: "60e80f65e4e96aab27b9185a" },
   { key: "3", Name: "Исполнена", oid: "60e80f65e4e96aab27b9185b" },
@@ -6,7 +6,7 @@ const STATUS = [
   { key: "5", Name: "Отказана", oid: "610394d252d6e7081c8d2ddc" },
   { key: "6", Name: "Отменена", oid: "614030e83d7e393568a9229f" },
 ];
-const requestCategoryId = [
+export const requestCategoryId = [
   { oid: "60e7f14fe4e96aab27b91855", Name: "Сантехника" },
   { oid: "60e7f175089b28500c814c95", Name: "Электричество" },
   { oid: "60e7f179089b28500c814c99", Name: "Плотницкие работы" },
@@ -18,7 +18,7 @@ const requestCategoryId = [
   { oid: "63491d4bd93a244e3066983e", Name: "ЕРЦ" },
   { oid: "60e7f17d089b28500c814c9d", Name: "Другое" },
 ];
-const requestLocationId = [
+export const requestLocationId = [
   { Name: "Квартира", oid: "60e7ea00e4e96aab27b9184d", predName: "В квартире" },
   { Name: "Подъезд", oid: "60e7ea00e4e96aab27b9184e", predName: "В подъезде" },
   { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f", predName: "В доме" },
@@ -26,8 +26,3 @@ const requestLocationId = [
   { Name: "Паркинг", oid: "60e7ea00e4e96aab27b91851", predName: "В паркинге" },
   { Name: "Другое", oid: "60e7ea00e4e96aab27b91852", predName: "В другом" },
 ];
-module.exports = {
-  STATUS,
-  requestCategoryId,
-  requestLocationId,
-};

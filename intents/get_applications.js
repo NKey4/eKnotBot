@@ -1,13 +1,15 @@
-const Application = require("../models/application");
-const { STATUS } = require("../constants/constants");
-require("dotenv").config();
+import Application from "../models/application.js";
+import { STATUS } from "../constants/constants.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const get_applications = async (res, queryResult, user_id) => {
   try {
     const applications = await Application.find({ yandexId: user_id });
 
     if (!applications || applications.length === 0) {
-      return res.status(404).send("Заявки не найдены")
+      return res.status(404).send("Заявки не найдены");
     }
 
     const counts = {};
@@ -30,4 +32,4 @@ const get_applications = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = get_applications;
+export default get_applications;

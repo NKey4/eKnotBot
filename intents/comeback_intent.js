@@ -1,8 +1,12 @@
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
-const axios = require("axios");
-const { struct } = require("pb-util");
-const Phrase = require("../models/phrase");
-require("dotenv").config();
+import { v2 as dialogflow } from '@google-cloud/dialogflow';
+import axios from 'axios';
+import { struct } from 'pb-util';
+import Phrase from '../models/phrase.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const { ContextsClient } = dialogflow;
 
 const comeback_intent = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
@@ -12,10 +16,10 @@ const comeback_intent = async (res, queryResult, user_id) => {
   });
   try {
     const response = await axios.get(
-      process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
+      `${process.env.GET_ADDRESS_URL}?YandexId=${user_id}`
     );
 
-    const phrases = await Phrase.find({}).exec({ type: "comeback" });
+    const phrases = await Phrase.find({ type: "comeback" });
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
 
     const modifiedText = randomPhrase.text.replace(
@@ -25,12 +29,14 @@ const comeback_intent = async (res, queryResult, user_id) => {
     res.send({
       fulfillmentText: modifiedText,
     });
+
     const parameters = {
       city: response.data[0].city,
       apartmentId: response.data[0].houses[0].apartmentRoles[0].apartmentId,
       address: response.data[0].houses[0].address,
       flat: response.data[0].houses[0].apartmentRoles[0].name,
     };
+
     const request = {
       parent: `projects/eknot-ktdq/agent/sessions/${user_id}`,
       context: {
@@ -47,4 +53,4 @@ const comeback_intent = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = comeback_intent;
+export default comeback_intent;

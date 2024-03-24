@@ -1,13 +1,14 @@
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
-const axios = require("axios");
-const Phrase = require("../models/phrase");
-const User = require("../models/user")
-const { struct } = require("pb-util");
-const {
-  format_number_to_770,
-  format_code,
-} = require("../utils/format_number");
-require("dotenv").config();
+import { v2 as dialogflow } from '@google-cloud/dialogflow';
+import axios from 'axios';
+import Phrase from '../models/phrase.js';
+import User from '../models/user.js';
+import { struct } from 'pb-util';
+import { format_number_to_770, format_code } from '../utils/format_number.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const { ContextsClient } = dialogflow;
 
 const check_user_yes_code = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
@@ -19,27 +20,27 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnlyPhoneNum = format_number_to_770(phoneNumber);
   const digitsOnly = format_code(code);
   try {
-    const user = await User.findOne({phoneNumber: digitsOnlyPhoneNum});
+    const user = await User.findOne({ phoneNumber: digitsOnlyPhoneNum });
 
-    if(!user){
+    if (!user) {
       return res.send({
-        fulfillmentText: "Пользователь с таким номер не существует."
-      })
+        fulfillmentText: "Пользователь с таким номером не существует."
+      });
     }
 
-    if(digitsOnly !== user.aliceCode){
+    if (digitsOnly !== user.aliceCode) {
       return res.send({
         fulfillmentText: "Код привязки не совпадает."
-      })
-    } else if(user.aliceCode === undefined){
+      });
+    } else if (user.aliceCode === undefined) {
       return res.send({
         fulfillmentText: "Код привязки не был сформирован."
-      })
+      });
     }
 
     const parameters = {
-      fullName: user.fullName,
-      // Дописать адреса
+      fullName: user.fullName
+      // Additional address handling might be implemented here
     };
     const request = {
       parent: `projects/eknot-ktdq/agent/sessions/${user_id}`,
@@ -51,23 +52,20 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
     };
     await contextsClient.createContext(request);
 
-    const phrases = await Phrase.find({}).exec({ type: "hello" });
-
+    const phrases = await Phrase.find({ type: "hello" });
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    const modifiedText = randomPhrase.text.replace(/fullName/g, user.fullName.split(" ")[1]);
 
-    const modifiedText = randomPhrase.text.replace(
-      /fullName/g,
-      fullName.split(" ")[1]
-    );
+    res.send({ fulfillmentText: modifiedText });
 
-    res.send({
-      fulfillmentText: modifiedText,
-    });
+    // The code to fetch address and set parameters might need to be updated or removed depending on your application logic
+  } catch (error) {
+    console.error("Ошибка сервера (check_user_yes_code):", error);
+    return res.sendStatus(500);
+  }
+};
 
-    // Убрать
-    const response_get_address = await axios.get(
-      process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
-    );
+export default check_user_yes_code;
 
     /*const parameters2 = {
       fullName: fullName,
@@ -77,10 +75,3 @@ const check_user_yes_code = async (res, queryResult, user_id) => {
       address: response_get_address.data[0].houses[0].address,
       flat: response_get_address.data[0].houses[0].apartmentRoles[0].name,
     };*/
-  } catch (error) {
-    console.error("Ошибка сервера (check_user_yes_code):", error);
-    return res.sendStatus(500);
-  }
-};
-
-module.exports = check_user_yes_code;
