@@ -1,6 +1,11 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const create_applications_Confirm = async (res, queryResult, user_id) => {
+export const create_applications_Confirm = async (
+  res,
+  queryResult,
+  user_id
+) => {
   const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
   let {
     "worktype.original": reason,
@@ -22,5 +27,3 @@ const create_applications_Confirm = async (res, queryResult, user_id) => {
     });
   }
 };
-
-module.exports = create_applications_Confirm;

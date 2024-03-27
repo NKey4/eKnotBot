@@ -1,7 +1,8 @@
-require("dotenv").config();
-const Application = require("../models/application");
+import dotenv from "dotenv";
+dotenv.config();
+import Application from "../models/Application.js";
 
-const delete_applications = async (res, queryResult, user_id) => {
+export const delete_applications = async (res, queryResult, user_id) => {
   try {
     const numberApp = queryResult.outputContexts[0].parameters["number"];
 
@@ -18,7 +19,7 @@ const delete_applications = async (res, queryResult, user_id) => {
       return res.send({ fulfillmentText: "Некорректный номер заявки." });
     }
 
-    // Обновление статуса заявки
+    // Update the status of the application
     await Application.findOneAndUpdate({ yandexId: user_id }, { status: "6" });
 
     res.send({ fulfillmentText: `Заявка под №${numberApp} отменена` });
@@ -27,5 +28,3 @@ const delete_applications = async (res, queryResult, user_id) => {
     res.send({ fulfillmentText: "Приношу извинения. Ошибка сервера." });
   }
 };
-
-module.exports = delete_applications;

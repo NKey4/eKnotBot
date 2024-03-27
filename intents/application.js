@@ -1,8 +1,9 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const application = async (res, queryResult, user_id) => {
+export const application = async (res, queryResult, user_id) => {
   try {
-    const userAddress = user.address;
+    const userAddress = user.address; // Assuming 'user' is defined elsewhere
     if (Array.isArray(userAddress) && userAddress.length > 1) {
       let message = "Выберите адрес:\n";
       for (let i = 0; i < userAddress.length; i++) {
@@ -24,4 +25,3 @@ const application = async (res, queryResult, user_id) => {
   }
 };
 
-module.exports = application;

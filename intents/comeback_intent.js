@@ -1,21 +1,22 @@
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
-const axios = require("axios");
-const { struct } = require("pb-util");
-const Phrase = require("../models/phrase");
-require("dotenv").config();
+import { ContextsClient } from "@google-cloud/dialogflow";
+import axios from "axios";
+import { struct } from "pb-util";
+import Phrase from "../models/Phrase.js";
+import User from "../models/User.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const comeback_intent = async (res, queryResult, user_id) => {
+export const comeback_intent = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
 
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
-  try {
-    const response = await axios.get(
-      process.env.GET_ADDRESS_URL + "?YandexId=" + `${user_id}`
-    );
 
-    const phrases = await Phrase.find({}).exec({ type: "comeback" });
+  try {
+    const user = await User.find({ yandexId: user_id });
+    console.log(user);
+    const phrases = await Phrase.find({ type: "hello" }).exec();
     const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
 
     const modifiedText = randomPhrase.text.replace(
@@ -25,12 +26,15 @@ const comeback_intent = async (res, queryResult, user_id) => {
     res.send({
       fulfillmentText: modifiedText,
     });
+
     const parameters = {
-      city: response.data[0].city,
-      apartmentId: response.data[0].houses[0].apartmentRoles[0].apartmentId,
-      address: response.data[0].houses[0].address,
-      flat: response.data[0].houses[0].apartmentRoles[0].name,
+      // city: response.data[0].city,
+      // apartmentId: response.data[0].houses[1].apartmentRoles[0].apartmentId,
+      // address: response.data[0].houses[1].address,
+      // flat: response.data[0].houses[1].apartmentRoles[0].name,
+      // data: response.data,
     };
+
     const request = {
       parent: `projects/eknot-ktdq/agent/sessions/${user_id}`,
       context: {
@@ -42,9 +46,7 @@ const comeback_intent = async (res, queryResult, user_id) => {
 
     await contextsClient.createContext(request);
   } catch (error) {
-    console.error("Ошибка сервера (comeback_intent):", error);
+    console.error("Server error (comeback_intent):", error);
     return res.sendStatus(500);
   }
 };
-
-module.exports = comeback_intent;

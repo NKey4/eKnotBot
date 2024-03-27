@@ -1,19 +1,22 @@
-const { ContextsClient } = require("@google-cloud/dialogflow").v2;
-const axios = require("axios");
-const { struct } = require("pb-util");
-const Application = require("../models/application");
-const {
+import { ContextsClient } from "@google-cloud/dialogflow";
+import axios from "axios";
+import Application from "../models/Application.js";
+import {
   STATUS,
   requestCategoryId,
   requestLocationId,
-} = require("../constants/constants");
-require("dotenv").config();
+} from "../constants/constants.js";
+import { struct } from "pb-util";
+import dotenv from "dotenv";
+dotenv.config();
 
-const createApplication = async (res, queryResult, user_id) => {
+export const create_applications = async (res, queryResult, user_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
+
+  let context;
 
   try {
     const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
@@ -22,11 +25,12 @@ const createApplication = async (res, queryResult, user_id) => {
     };
     const response = await contextsClient.getContext(request);
 
-    const context = response[0].parameters.fields;
+    context = response[0].parameters.fields;
 
-    if (context.description.stringValue === "") {
-      context.description.stringValue =
-        context["worktype.original"].stringValue;
+    if (!context.description) {
+      context.description = {
+        stringValue: context["worktype.original"].stringValue,
+      };
     }
 
     const status_id = STATUS.find((item) => item.key === "1")?.oid;
@@ -60,19 +64,22 @@ const createApplication = async (res, queryResult, user_id) => {
         fulfillmentText: "Ошибка создания заявки, повторите позднее.",
       });
     } else {
-      res.send({
-        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
-      });
       const response = await axios.post(
         process.env.CREATE_APPLICATION_URL,
         applicationToSend
       );
+
+      res.send({
+        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
+      });
+
       const newApplication = new Application({
         ...applicationToSend,
         id: " ",
         status_id,
         yandexAddress: `город ${context.city.stringValue}, ${context.address.stringValue}, ${context.flat.stringValue}`,
       });
+
       await newApplication.save();
 
       const parameters = {
@@ -82,6 +89,7 @@ const createApplication = async (res, queryResult, user_id) => {
         flat: context.flat.stringValue,
         description: "",
       };
+
       const request = {
         context: {
           name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
@@ -89,6 +97,7 @@ const createApplication = async (res, queryResult, user_id) => {
           lifespanCount: 50,
         },
       };
+
       await contextsClient.updateContext(request);
 
       const requestId = String(response.data.requestId);
@@ -105,6 +114,7 @@ const createApplication = async (res, queryResult, user_id) => {
       flat: context.flat.stringValue,
       description: "",
     };
+
     const request = {
       context: {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
@@ -112,12 +122,12 @@ const createApplication = async (res, queryResult, user_id) => {
         lifespanCount: 50,
       },
     };
+
     res.send({
       fulfillmentText: "Дом ни к какой организации не прикреплён",
     });
+
     await contextsClient.updateContext(request);
     console.error("Ошибка:", error);
   }
 };
-
-module.exports = createApplication;

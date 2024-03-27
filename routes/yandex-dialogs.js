@@ -1,14 +1,15 @@
-const express = require("express");
-const { ContextsClient } = require("@google-cloud/dialogflow").v2beta1;
+import express from "express";
+import { ContextsClient } from "@google-cloud/dialogflow";
+import detectIntent from "../df.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 const aliceRouter = express.Router();
-const detectIntent = require("../df");
-require("dotenv").config();
+const dialogflowClient = new ContextsClient({
+  credentials: JSON.parse(process.env.CREDENTIALS),
+});
 
 aliceRouter.post("/", async (req, res) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
-  const dialogflowClient = new ContextsClient({
-    credentials: { private_key, client_email },
-  });
   try {
     const { request, session, state, version, meta } = req.body;
     const { user_id } = session.user;
@@ -27,7 +28,6 @@ aliceRouter.post("/", async (req, res) => {
 
     if (!request.command) {
       if (Object.keys(state.user).length) {
-        // jsonAnswer.user_state_update = { fullName: null };
         intentResponse = await detectIntent(
           `fullName ${state.user.fullName}`,
           user_id
@@ -76,4 +76,4 @@ aliceRouter.post("/", async (req, res) => {
   }
 });
 
-module.exports = aliceRouter;
+export default aliceRouter;

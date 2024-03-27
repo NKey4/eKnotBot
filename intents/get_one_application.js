@@ -1,9 +1,10 @@
-const Application = require("../models/application");
-const { STATUS } = require("../constants/constants");
-const { usual_number } = require("../intents/format_number");
-require("dotenv").config();
+import Application from "../models/Application.js";
+import { STATUS } from "../constants/constants.js";
+import { usual_number } from "../intents/format_number.js";
+import dotenv from "dotenv";
+dotenv.config();
 
-const get_one_application = async (res, queryResult, user_id) => {
+export const get_one_application = async (res, queryResult, user_id) => {
   try {
     const application = await Application.find({ yandexId: user_id });
 
@@ -35,5 +36,3 @@ const get_one_application = async (res, queryResult, user_id) => {
     res.send({ fulfillmentText: "Приношу извинения. Ошибка сервера." });
   }
 };
-
-module.exports = get_one_application;

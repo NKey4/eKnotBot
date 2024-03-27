@@ -1,8 +1,10 @@
-const express = require("express");
-const aliceRouter = require("./routes/yandex-dialogs");
-const dialogFlowrouter = require("./routes/dialogflow");
-const mongoose = require("mongoose");
-require("dotenv").config();
+import express from "express";
+import aliceRouter from "./routes/yandex-dialogs.js";
+import dialogFlowRouter from "./routes/dialogflow.js";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -14,10 +16,10 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then((res) => console.log("MongoDB подключен"))
-  .catch((err) => console.log(`Ошибка подключения к бд: ${err}`));
+  .then((res) => console.log("MongoDB connected"))
+  .catch((err) => console.log(`Error connecting to the database: ${err}`));
 
-app.listen(3000, () => console.log("Сервер запущен на 3000 порту"));
+app.listen(3000, () => console.log("Server is running on port 3000"));
 
 app.use("/", aliceRouter);
-app.use("/webhook", dialogFlowrouter);
+app.use("/webhook", dialogFlowRouter);

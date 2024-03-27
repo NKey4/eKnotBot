@@ -1,11 +1,12 @@
-const dialogflow = require("@google-cloud/dialogflow").v2;
-require("dotenv").config();
+import { SessionsClient } from "@google-cloud/dialogflow";
+import dotenv from "dotenv";
+dotenv.config();
 
 const { project_id, private_key, client_email } = JSON.parse(
   process.env.CREDENTIALS
 );
 
-const sessionClient = new dialogflow.SessionsClient({
+const sessionClient = new SessionsClient({
   credentials: { private_key, client_email },
 });
 
@@ -33,4 +34,4 @@ const detectIntent = async (queryText, user_id) => {
   };
 };
 
-module.exports = detectIntent;
+export default detectIntent;

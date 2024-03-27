@@ -1,7 +1,7 @@
-const path = require("path");
-const fs = require("fs");
-const jimp = require("jimp");
-const sizes = require("../configs/sizes.json");
+import path from "path";
+import fs from "fs";
+import jimp from "jimp";
+import sizes from "../configs/sizes.json";
 
 const defaultDir = path.resolve(__dirname, "./images/default");
 const resultDir = path.resolve(__dirname, "./images/result");
