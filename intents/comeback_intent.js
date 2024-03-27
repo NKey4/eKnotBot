@@ -1,7 +1,5 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
-import axios from "axios";
 import { struct } from "pb-util";
-import Phrase from "../models/Phrase.js";
 import User from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -14,23 +12,16 @@ export const comeback_intent = async (res, queryResult, user_id) => {
   });
 
   try {
-    const user = await User.find({ yandexId: user_id });
-    console.log(user);
-    const phrases = await Phrase.find({ type: "hello" }).exec();
-    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    const user = await User.findOne({ yandexId: user_id });
 
-    const modifiedText = randomPhrase.text.replace(
-      /fullName/g,
-      queryResult.queryText.replace("fullName", "")
-    );
     res.send({
-      fulfillmentText: modifiedText,
+      fulfillmentText: "С возвращением " + user.fullName,
     });
 
     const parameters = {
       // city: response.data[0].city,
       // apartmentId: response.data[0].houses[1].apartmentRoles[0].apartmentId,
-      // address: response.data[0].houses[1].address,
+      address: user.address,
       // flat: response.data[0].houses[1].apartmentRoles[0].name,
       // data: response.data,
     };

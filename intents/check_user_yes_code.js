@@ -1,6 +1,6 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
-import axios from "axios";
-import Phrase from "../models/Phrase.js";
+import User from "../models/User.js";
+
 import { struct } from "pb-util";
 import { format_number_to_770, format_code } from "../intents/format_number.js";
 import dotenv from "dotenv";
@@ -18,21 +18,16 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnly = format_code(code);
 
   try {
-    const data = {
-      yandexId: user_id,
-      userName: digitsOnlyPhoneNum,
-      code: digitsOnly,
-    };
-
-    const response_confirm = await axios.post(
-      process.env.CONFIRM_CODE_URL,
-      data
-    );
-
-    const fullName = response_confirm.data.fullName;
+    const user = await User.findOne({ phoneNumber: digitsOnlyPhoneNum });
+    console.log(user);
+    if (user.aliceCode === digitsOnly) {
+      user.yandexId = user_id;
+      user.aliceCode = undefined;
+      await user.save();
+    }
 
     const parameters = {
-      fullName: fullName,
+      fullName: user.fullName,
     };
 
     const request = {
@@ -46,30 +41,14 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
 
     contextsClient.createContext(request);
 
-    const phrases = await Phrase.find({ type: "hello" }).exec();
-
-    const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-
-    const modifiedText = randomPhrase.text.replace(
-      /fullName/g,
-      fullName.split(" ")[1]
-    );
-
     res.send({
-      fulfillmentText: modifiedText,
+      fulfillmentText: "Добро пожаловать " + user.fullName,
     });
 
-    const response_get_address = await axios.get(
-      `${process.env.GET_ADDRESS_URL}?YandexId=${user_id}`
-    );
-
     const parameters2 = {
-      fullName: fullName,
-      city: response_get_address.data[0].city,
-      apartmentId:
-        response_get_address.data[0].houses[1].apartmentRoles[0].apartmentId,
-      address: response_get_address.data[0].houses[1].address,
-      flat: response_get_address.data[0].houses[1].apartmentRoles[0].name,
+      fullName: user.fullName,
+      // city: response_get_address.data[0].city,
+      address: user.address,
     };
 
     const request2 = {

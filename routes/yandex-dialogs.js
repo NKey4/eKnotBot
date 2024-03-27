@@ -28,6 +28,7 @@ aliceRouter.post("/", async (req, res) => {
 
     if (!request.command) {
       if (Object.keys(state.user).length) {
+        // jsonAnswer.user_state_update = { fullName: null };
         intentResponse = await detectIntent(
           `fullName ${state.user.fullName}`,
           user_id
@@ -35,6 +36,7 @@ aliceRouter.post("/", async (req, res) => {
         jsonAnswer.response = {
           text: intentResponse.fulfillmentText,
         };
+        console.log(intentResponse.fulfillmentText);
       } else {
         jsonAnswer.response = {
           text: (await detectIntent("Привет", user_id)).fulfillmentText,
