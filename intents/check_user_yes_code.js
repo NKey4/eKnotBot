@@ -1,6 +1,6 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
 import User from "../models/User.js";
-
+import Address from "../models/Address.js";
 import { struct } from "pb-util";
 import { format_number_to_770, format_code } from "../intents/format_number.js";
 import dotenv from "dotenv";
@@ -18,8 +18,10 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
   const digitsOnly = format_code(code);
 
   try {
-    const user = await User.findOne({ phoneNumber: digitsOnlyPhoneNum });
-    console.log(user);
+    const user = await User.findOne({
+      phoneNumber: digitsOnlyPhoneNum,
+    }).populate("addresses");
+
     if (user.aliceCode === digitsOnly) {
       user.yandexId = user_id;
       user.aliceCode = undefined;
@@ -28,6 +30,8 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
 
     const parameters = {
       fullName: user.fullName,
+      city: user.addresses.city,
+      street: user.addresses.street,
     };
 
     const request = {
@@ -44,22 +48,6 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
     res.send({
       fulfillmentText: "Добро пожаловать " + user.fullName,
     });
-
-    const parameters2 = {
-      fullName: user.fullName,
-      // city: response_get_address.data[0].city,
-      address: user.address,
-    };
-
-    const request2 = {
-      context: {
-        name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
-        parameters: struct.encode(parameters2),
-        lifespanCount: 50,
-      },
-    };
-
-    await contextsClient.updateContext(request2);
   } catch (error) {
     console.error("Server error (check_user_yes_code):", error);
     return res.sendStatus(500);

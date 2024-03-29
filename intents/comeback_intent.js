@@ -12,18 +12,12 @@ export const comeback_intent = async (res, queryResult, user_id) => {
   });
 
   try {
-    const user = await User.findOne({ yandexId: user_id });
-
-    res.send({
-      fulfillmentText: "С возвращением " + user.fullName,
-    });
-
+    const user = await User.findOne({ yandexId: user_id }).populate(
+      "addresses"
+    );
+    const addresses = user.addresses.map((address) => address.toObject());
     const parameters = {
-      // city: response.data[0].city,
-      // apartmentId: response.data[0].houses[1].apartmentRoles[0].apartmentId,
-      address: user.address,
-      // flat: response.data[0].houses[1].apartmentRoles[0].name,
-      // data: response.data,
+      addresses: addresses.map(({ city, street }) => ({ city, street })),
     };
 
     const request = {
@@ -35,7 +29,9 @@ export const comeback_intent = async (res, queryResult, user_id) => {
       },
     };
 
-    await contextsClient.createContext(request);
+    res.send({
+      fulfillmentText: "С возвращением " + user.fullName,
+    });
   } catch (error) {
     console.error("Server error (comeback_intent):", error);
     return res.sendStatus(500);

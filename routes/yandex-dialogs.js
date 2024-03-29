@@ -1,6 +1,8 @@
 import express from "express";
 import { ContextsClient } from "@google-cloud/dialogflow";
 import detectIntent from "../df.js";
+import { struct } from "pb-util";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,7 +38,6 @@ aliceRouter.post("/", async (req, res) => {
         jsonAnswer.response = {
           text: intentResponse.fulfillmentText,
         };
-        console.log(intentResponse.fulfillmentText);
       } else {
         jsonAnswer.response = {
           text: (await detectIntent("Привет", user_id)).fulfillmentText,
@@ -65,8 +66,9 @@ aliceRouter.post("/", async (req, res) => {
           name: contextToFind,
         };
         const response = await dialogflowClient.getContext(request);
+
         jsonAnswer.user_state_update = {
-          fullName: response[0].parameters.fields.fullName.stringValue,
+          fullName: struct.decode(response[0].parameters).fullName,
         };
       }
     }

@@ -25,8 +25,8 @@ export const create_applications = async (res, queryResult, user_id) => {
     };
     const response = await contextsClient.getContext(request);
 
-    context = response[0].parameters.fields;
-
+    context = struct.decode(response[0].parameters);
+    console.log(context);
     if (!context.description) {
       context.description = {
         stringValue: context["worktype.original"].stringValue,

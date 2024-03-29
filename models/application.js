@@ -30,10 +30,7 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    yandexAddress: {
-      type: String,
-      required: true,
-    },
+    address: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
     dataMessage: String,
     userMessage: String,
   },
