@@ -8,6 +8,7 @@ export { check_user_yes_code } from "./check_user_yes_code.js";
 export { comeback_intent } from "./comeback_intent.js";
 export { delete_applications } from "./delete_applications.js";
 export { get_debt } from "./get_debt.js";
+export { appeal } from "./appeal.js";
 export { get_applications } from "./get_applications.js";
 export { get_one_application } from "./get_one_application.js";
 export { get_specific_application } from "./get_specific_application.js";

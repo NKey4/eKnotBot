@@ -15,7 +15,7 @@ dialogFlowRouter.post("/", async (req, res) => {
     intentName === "create_applications_choiceflat_yes_desc"
   ) {
     const createIntentName = "create_applications_confirm";
-
+    console.log(createIntentName);
     await intentMappings[createIntentName](res, queryResult, user_id);
   } else if (
     intentName === "create_applications_choiceflat_no_yes" ||

@@ -16,9 +16,9 @@ export const create_applications_accept = async (res, queryResult, user_id) => {
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
-  let context;
+
   try {
-    context = queryResult.outputContexts[2].parameters;
+    let context = queryResult.outputContexts[4].parameters;
     const number = context.number;
     if (!context.description) {
       context.description = context["worktype.original"];

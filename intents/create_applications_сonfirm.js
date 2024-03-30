@@ -14,7 +14,7 @@ export const create_applications_confirm = async (
     description = "",
     addresses,
     number,
-  } = queryResult.outputContexts[3].parameters;
+  } = queryResult.outputContexts[5].parameters;
 
   console.log(queryResult.outputContexts);
   location = location.toLowerCase();
@@ -28,7 +28,11 @@ export const create_applications_confirm = async (
     });
   } else {
     res.send({
-      fulfillmentText: `Желаете подать заявку, что у Вас ${location} ${reason}. Подробности: ${description}. Адрес: город ${city}, ${address}. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`,
+      fulfillmentText: `Желаете подать заявку, что у Вас ${location} ${reason}. Подробности: ${description}. Адрес: город ${
+        addresses[number - 1].city
+      }, ${
+        addresses[number - 1].street
+      }. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`,
     });
   }
 };
