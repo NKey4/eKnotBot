@@ -1,11 +1,14 @@
-import { ContextsClient } from "@google-cloud/dialogflow";
+import dialogflow from "@google-cloud/dialogflow";
+const { ContextsClient } = dialogflow.v2beta1;
 import { struct } from "pb-util";
 import User from "../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 export const comeback_intent = async (res, queryResult, user_id) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+  const { project_id, private_key, client_email } = JSON.parse(
+    process.env.CREDENTIALS
+  );
 
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
@@ -17,17 +20,21 @@ export const comeback_intent = async (res, queryResult, user_id) => {
     );
     const addresses = user.addresses.map((address) => address.toObject());
     const parameters = {
-      addresses: addresses.map(({ city, street }) => ({ city, street })),
+      addresses: addresses.map(({ _id, city, street }) => ({
+        _id: _id.toString(),
+        city,
+        street,
+      })),
     };
 
-    const request = {
+    contextsClient.createContext({
       parent: `projects/eknot-ktdq/agent/sessions/${user_id}`,
       context: {
         name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
         parameters: struct.encode(parameters),
         lifespanCount: 50,
       },
-    };
+    });
 
     res.send({
       fulfillmentText: "С возвращением " + user.fullName,

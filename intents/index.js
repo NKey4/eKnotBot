@@ -1,7 +1,9 @@
 export { application } from "./application.js";
 export { check_user } from "./check_user.js";
 export { create_applications } from "./create_applications.js";
-export { create_applications_Confirm } from "./create_applications_Confirm.js";
+export { create_applications_confirm } from "./create_applications_сonfirm.js";
+export { create_applications_accept } from "./create_applications_accept.js";
+export { create_applications_choiceflat } from "./create_applications_choiceflat.js";
 export { check_user_yes_code } from "./check_user_yes_code.js";
 export { comeback_intent } from "./comeback_intent.js";
 export { delete_applications } from "./delete_applications.js";

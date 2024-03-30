@@ -6,28 +6,29 @@ const ApplicationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    yandexId: {
-      type: String,
-      required: true,
-    },
-    apartmentId: {
-      type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     requestLocationId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
       required: true,
     },
     requestCategoryId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
       required: true,
     },
     requestSubCategoryId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
       required: true,
     },
     status_id: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
       required: true,
     },
     address: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },

@@ -1,10 +1,10 @@
 export const STATUS = [
-  { key: "1", Name: "Новая", oid: "60e80f65e4e96aab27b91859" },
-  { key: "2", Name: "В работе", oid: "60e80f65e4e96aab27b9185a" },
-  { key: "3", Name: "Исполнена", oid: "60e80f65e4e96aab27b9185b" },
-  { key: "4", Name: "Закрыта", oid: "60e80f65e4e96aab27b9185c" },
-  { key: "5", Name: "Отказана", oid: "610394d252d6e7081c8d2ddc" },
-  { key: "6", Name: "Отменена", oid: "614030e83d7e393568a9229f" },
+  { key: "1", Name: "Новая", oid: "660087e06c58241f9b026704" },
+  { key: "2", Name: "В работе", oid: "660087ec6c58241f9b026705" },
+  { key: "3", Name: "Исполнена", oid: "660087fa6c58241f9b026706" },
+  { key: "4", Name: "Закрыта", oid: "660088066c58241f9b026707" },
+  { key: "5", Name: "Отказана", oid: "6600880f6c58241f9b026708" },
+  { key: "6", Name: "Отменена", oid: "6600881e6c58241f9b026709" },
 ];
 export const requestCategoryId = [
   { oid: "60e7f14fe4e96aab27b91855", Name: "Сантехника" },
@@ -19,10 +19,10 @@ export const requestCategoryId = [
   { oid: "60e7f17d089b28500c814c9d", Name: "Другое" },
 ];
 export const requestLocationId = [
-  { Name: "Квартира", oid: "60e7ea00e4e96aab27b9184d", predName: "В квартире" },
-  { Name: "Подъезд", oid: "60e7ea00e4e96aab27b9184e", predName: "В подъезде" },
-  { Name: "Дом", oid: "60e7ea00e4e96aab27b9184f", predName: "В доме" },
-  { Name: "Двор", oid: "60e7ea00e4e96aab27b91850", predName: "Во дворе" },
-  { Name: "Паркинг", oid: "60e7ea00e4e96aab27b91851", predName: "В паркинге" },
-  { Name: "Другое", oid: "60e7ea00e4e96aab27b91852", predName: "В другом" },
+  { Name: "Квартира", oid: "6600874e6c58241f9b0266fe", predName: "В квартире" },
+  { Name: "Подъезд", oid: "660087976c58241f9b0266ff", predName: "В подъезде" },
+  { Name: "Дом", oid: "660087aa6c58241f9b026700", predName: "В доме" },
+  { Name: "Двор", oid: "660087b76c58241f9b026701", predName: "Во дворе" },
+  { Name: "Паркинг", oid: "660087c26c58241f9b026702", predName: "В паркинге" },
+  { Name: "Другое", oid: "660087cc6c58241f9b026703", predName: "В другом" },
 ];

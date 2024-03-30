@@ -10,12 +10,18 @@ dialogFlowRouter.post("/", async (req, res) => {
   const user_id = session.split("/").pop();
   const intentName = queryResult.intent.displayName;
   console.log(intentName);
-  if (intentName.startsWith("create_applications")) {
-    const createIntentName =
-      intentName === "create_applications_no" ||
-      intentName === "create_applications_yes_desc"
-        ? "create_applications_Confirm"
-        : "create_applications";
+  if (
+    intentName === "create_applications_choiceflat_no" ||
+    intentName === "create_applications_choiceflat_yes_desc"
+  ) {
+    const createIntentName = "create_applications_confirm";
+
+    await intentMappings[createIntentName](res, queryResult, user_id);
+  } else if (
+    intentName === "create_applications_choiceflat_no_yes" ||
+    intentName === "create_applications_choiceflat_yes_desc_yes"
+  ) {
+    const createIntentName = "create_applications_accept";
 
     await intentMappings[createIntentName](res, queryResult, user_id);
   } else if (intentMappings[intentName]) {

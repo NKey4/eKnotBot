@@ -1,5 +1,4 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
-import axios from "axios";
 import Application from "../models/Application.js";
 import {
   STATUS,
@@ -10,7 +9,7 @@ import { struct } from "pb-util";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const createApplicationChoiceFlat = async (
+export const create_applications_choiceflat = async (
   res,
   queryResult,
   user_id
@@ -23,12 +22,12 @@ export const createApplicationChoiceFlat = async (
   let context;
 
   try {
-    const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
-    const request = {
-      name: contextToFind,
-    };
-    const response = await contextsClient.getContext(request);
-
-    context = response[0].parameters.fields;
+    console.log(queryResult.outputContexts[2].parameters.number);
+    queryResult.outputContexts[2].parameters.addresses[
+      queryResult.outputContexts[2].parameters.number
+    ];
+    res.send({
+      fulfillmentText: "Не желаете мне рассказать подробности?",
+    });
   } catch (error) {}
 };
