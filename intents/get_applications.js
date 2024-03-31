@@ -3,9 +3,9 @@ import { STATUS } from "../constants/constants.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const get_applications = async (res, queryResult, user_id) => {
+export const get_applications = async (res, queryResult, yandex_id) => {
   try {
-    const applications = await Application.find({ yandexId: user_id });
+    const applications = await Application.find({ yandexId: yandex_id });
 
     if (!applications || applications.length === 0) {
       return res.status(404).send("Заявки не найдены");

@@ -10,10 +10,10 @@ const sessionClient = new SessionsClient({
   credentials: { private_key, client_email },
 });
 
-const detectIntent = async (queryText, user_id) => {
+const detectIntent = async (queryText, yandex_id) => {
   const sessionPath = sessionClient.projectAgentSessionPath(
     project_id,
-    user_id
+    yandex_id
   );
   const request = {
     session: sessionPath,

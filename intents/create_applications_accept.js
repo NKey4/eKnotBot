@@ -1,6 +1,5 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
 import ApplicationModel from "../models/Application.js";
-import UserModel from "../models/User.js";
 import {
   STATUS,
   requestCategoryId,
@@ -11,14 +10,20 @@ import { struct } from "pb-util";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const create_applications_accept = async (res, queryResult, user_id) => {
+export const create_applications_accept = async (
+  res,
+  queryResult,
+  yandex_id,
+  user_id
+) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
 
   try {
-    let context = queryResult.outputContexts[4].parameters;
+    console.log(queryResult.outputContexts);
+    let context = queryResult.outputContexts[2].parameters;
     const number = context.number;
     if (!context.description) {
       context.description = context["worktype.original"];
@@ -47,10 +52,10 @@ export const create_applications_accept = async (res, queryResult, user_id) => {
     } else {
       seqId = counter.seq;
     }
-    const user = await UserModel.findOne({ yandexId: user_id });
+
     const applicationToSend = {
       id: seqId,
-      user: user._id,
+      user: user_id,
       address: context.addresses[number - 1]._id,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,

@@ -4,9 +4,9 @@ dotenv.config();
 export const create_applications_confirm = async (
   res,
   queryResult,
-  user_id
+  yandex_id
 ) => {
-  const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+  const contextToFind = `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`;
   let {
     "worktype.original": reason,
     location,
@@ -15,8 +15,8 @@ export const create_applications_confirm = async (
     addresses,
     number,
   } = queryResult.outputContexts[5].parameters;
-
   console.log(queryResult.outputContexts);
+  console.log(addresses);
   location = location.toLowerCase();
   if (description === "") {
     res.send({

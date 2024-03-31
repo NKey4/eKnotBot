@@ -1,4 +1,3 @@
-export { application } from "./application.js";
 export { check_user } from "./check_user.js";
 export { create_applications } from "./create_applications.js";
 export { create_applications_confirm } from "./create_applications_сonfirm.js";

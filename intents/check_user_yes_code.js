@@ -1,12 +1,11 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
 import User from "../models/User.js";
-import Address from "../models/Address.js";
 import { struct } from "pb-util";
 import { format_number_to_770, format_code } from "../intents/format_number.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const check_user_yes_code = async (res, queryResult, user_id) => {
+export const check_user_yes_code = async (res, queryResult, yandex_id) => {
   const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
 
   const contextsClient = new ContextsClient({
@@ -23,7 +22,7 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
     }).populate("addresses");
 
     if (user.aliceCode === digitsOnly) {
-      user.yandexId = user_id;
+      user.yandexId = yandex_id;
       user.aliceCode = undefined;
       await user.save();
     }
@@ -35,9 +34,9 @@ export const check_user_yes_code = async (res, queryResult, user_id) => {
     };
 
     const request = {
-      parent: `projects/eknot-ktdq/agent/sessions/${user_id}`,
+      parent: `projects/eknot-ktdq/agent/sessions/${yandex_id}`,
       context: {
-        name: `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`,
+        name: `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`,
         parameters: struct.encode(parameters),
         lifespanCount: 50,
       },

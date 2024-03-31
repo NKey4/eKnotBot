@@ -2,11 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 import Application from "../models/Application.js";
 
-export const delete_applications = async (res, queryResult, user_id) => {
+export const delete_applications = async (res, queryResult, yandex_id) => {
   try {
     const numberApp = queryResult.outputContexts[0].parameters["number"];
 
-    const app = await Application.findOne({ yandexId: user_id });
+    const app = await Application.findOne({ yandexId: yandex_id });
 
     if (!app) {
       return res.sendStatus(400);
@@ -19,8 +19,10 @@ export const delete_applications = async (res, queryResult, user_id) => {
       return res.send({ fulfillmentText: "Некорректный номер заявки." });
     }
 
-    // Update the status of the application
-    await Application.findOneAndUpdate({ yandexId: user_id }, { status: "6" });
+    await Application.findOneAndUpdate(
+      { yandexId: yandex_id },
+      { status: "6" }
+    );
 
     res.send({ fulfillmentText: `Заявка под №${numberApp} отменена` });
   } catch (error) {

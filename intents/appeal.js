@@ -1,31 +1,22 @@
 import dialogflow from "@google-cloud/dialogflow";
 import OpenAI from "openai";
-const { ContextsClient } = dialogflow.v2beta1;
-import { struct } from "pb-util";
-import User from "../models/User.js";
+import AppealsModel from "../models/Appeals.js";
 import dotenv from "dotenv";
+
 dotenv.config();
 
+const { ContextsClient } = dialogflow.v2beta1;
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const ASSISTANT_ID = process.env.ASSISTANT_ID;
+
 function removeLinks(text) {
-  const linkRegex = /【\d+:\d+†source】/g;
-  return text.replace(linkRegex, "");
+  return text.replace(/【\d+:\d+†source】/g, "");
 }
 
-export const appeal = async (res, queryResult, user_id) => {
-  const { project_id, private_key, client_email } = JSON.parse(
-    process.env.CREDENTIALS
-  );
-  const openai = new OpenAI({
-    apiKey: "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",
-  });
-  const contextsClient = new ContextsClient({
-    credentials: { private_key, client_email },
-  });
-
+export const appeal = async (res, queryResult, yandex_id, user_id) => {
   try {
-    const assistant_id = "asst_vEJ2dbY917ntshxsQXDAqEgq";
     const run = await openai.beta.threads.createAndRun({
-      assistant_id: assistant_id,
+      assistant_id: ASSISTANT_ID,
       thread: {
         messages: [
           {
@@ -35,25 +26,31 @@ export const appeal = async (res, queryResult, user_id) => {
         ],
       },
     });
-
-    const runShow = await openai.beta.threads.runs.retrieve(
-      run.thread_id,
-      run.id
-    );
     res.send({
       fulfillmentText:
         "Ответ юридического консультанта обработается в течении минуты. Ответ вы можете отследить на сайте Sensata-service",
     });
-    setTimeout(async () => {
-      const messages = await openai.beta.threads.messages.list(run.thread_id);
-      messages.data.reverse().map((message) => {
-        console.log(
-          message.role + ": " + removeLinks(message.content[0].text.value)
-        );
-      });
-    }, 10000);
+    let messages;
+    let answer;
+    do {
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Check every 5 seconds
+      messages = await openai.beta.threads.messages.list(run.thread_id);
+      const message = messages.data.find(
+        (msg) =>
+          msg.role === "assistant" && msg.content && msg.content.length > 0
+      );
+      if (message) {
+        answer = message.content[0].text.value;
+      }
+    } while (!answer);
+
+    const newAppeal = new AppealsModel({
+      answer: removeLinks(answer),
+      user: user_id,
+    });
+    await newAppeal.save();
   } catch (error) {
     console.error("Server error (appeal):", error);
-    return res.sendStatus(500);
+    res.sendStatus(500);
   }
 };

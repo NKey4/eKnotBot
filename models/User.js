@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import Address from "./Address.js";
 const UserSchema = new mongoose.Schema(
   {
     fullName: {
@@ -18,9 +18,10 @@ const UserSchema = new mongoose.Schema(
     },
     confirmationCode: String,
     aliceCode: String,
-    yandexId: String,
+    yandex_id: String,
     addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Address" }],
     entryDate: Date,
+    appeals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appeals" }],
   },
   {
     timestamps: true,

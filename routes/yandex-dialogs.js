@@ -14,7 +14,7 @@ const dialogflowClient = new ContextsClient({
 aliceRouter.post("/", async (req, res) => {
   try {
     const { request, session, state, version, meta } = req.body;
-    const { user_id } = session.user;
+    const yandex_id = session.user.user_id;
     const jsonAnswer = { version, session };
     let intentResponse;
 
@@ -33,14 +33,14 @@ aliceRouter.post("/", async (req, res) => {
         // jsonAnswer.user_state_update = { fullName: null };
         intentResponse = await detectIntent(
           `fullName ${state.user.fullName}`,
-          user_id
+          yandex_id
         );
         jsonAnswer.response = {
           text: intentResponse.fulfillmentText,
         };
       } else {
         jsonAnswer.response = {
-          text: (await detectIntent("Привет", user_id)).fulfillmentText,
+          text: (await detectIntent("Привет", yandex_id)).fulfillmentText,
           card: {
             type: "BigImage",
             image_id: "1533899/4ac3620447eeaa50946a",
@@ -53,7 +53,7 @@ aliceRouter.post("/", async (req, res) => {
         };
       }
     } else {
-      intentResponse = await detectIntent(request.command, user_id);
+      intentResponse = await detectIntent(request.command, yandex_id);
       jsonAnswer.response = { text: intentResponse.fulfillmentText };
       if (intentResponse.intentDisplayName === "Exit") {
         jsonAnswer.response.end_session = true;
@@ -61,7 +61,7 @@ aliceRouter.post("/", async (req, res) => {
         intentResponse.intentDisplayName === "check_user_yes_code" &&
         intentResponse.webhookStatus.code === 0
       ) {
-        const contextToFind = `projects/eknot-ktdq/agent/sessions/${user_id}/contexts/logincheck`;
+        const contextToFind = `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`;
         const request = {
           name: contextToFind,
         };

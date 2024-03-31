@@ -4,9 +4,9 @@ import { usual_number } from "../intents/format_number.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const get_one_application = async (res, queryResult, user_id) => {
+export const get_one_application = async (res, queryResult, yandex_id) => {
   try {
-    const application = await Application.find({ yandexId: user_id });
+    const application = await Application.find({ yandexId: yandex_id });
 
     if (!application || application.length === 0) {
       return res.sendStatus(400);
