@@ -2,10 +2,10 @@
   "name": "alicebot",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon main.js"
+    "start": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
