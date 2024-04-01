@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import AppealsModel from "../models/Appeal.js";
+import AppealsModel from "../ /Appeal.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -32,6 +32,7 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
     do {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       messages = await openai.beta.threads.messages.list(run.thread_id);
+      console.log(messages);
       const message = messages.data.find(
         (msg) =>
           msg.role === "assistant" && msg.content && msg.content.length > 0
