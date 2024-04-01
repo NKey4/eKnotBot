@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-import Application from "../models/Application.js";
+import Application from "../models/application.js";
 
 export const delete_applications = async (res, queryResult, yandex_id) => {
   try {

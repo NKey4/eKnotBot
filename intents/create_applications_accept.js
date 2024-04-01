@@ -1,4 +1,4 @@
-import ApplicationModel from "../models/Application.js";
+import ApplicationModel from "../models/application.js";
 import {
   STATUS,
   requestCategoryId,

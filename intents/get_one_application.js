@@ -1,4 +1,4 @@
-import Application from "../models/Application.js";
+import Application from "../models/application.js";
 import { STATUS } from "../constants/constants.js";
 import { usual_number } from "../intents/format_number.js";
 import dotenv from "dotenv";
