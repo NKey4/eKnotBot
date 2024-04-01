@@ -35,10 +35,8 @@ const ApplicationSchema = new mongoose.Schema(
     userMessage: String,
   },
   {
-    timestamps: true,
-  },
-  {
     versionKey: false,
+    timestamps: true,
   }
 );
 

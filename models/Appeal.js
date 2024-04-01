@@ -11,8 +11,6 @@ const AppealSchema = new mongoose.Schema(
   },
   {
     versionKey: false,
-  },
-  {
     timestamps: true,
   }
 );
