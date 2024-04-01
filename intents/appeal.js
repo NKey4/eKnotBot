@@ -38,11 +38,13 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
       );
       if (message) {
         answer = message.content[0].text.value;
+        question = message.content[1].text.value;
         console.log(answer);
       }
     } while (!answer);
 
     const newAppeal = new AppealsModel({
+      question,
       answer: removeLinks(answer),
       user: user_id,
     });
