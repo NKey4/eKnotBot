@@ -1,8 +1,8 @@
-const path = require("path");
-const fs = require("fs");
-const request = require("request-promise");
-const dialogs_config = require("./configs/dialogs");
-
+import path from "path";
+import fs from "fs";
+import request from "request-promise";
+import dotenv from "dotenv";
+dotenv.config();
 (async () => {
   const result_dir = path.resolve(__dirname, "./images/result"),
     images = fs
@@ -12,9 +12,9 @@ const dialogs_config = require("./configs/dialogs");
     const buffer = fs.readFileSync(`${result_dir}/${image_name}`);
 
     let result = await request.post({
-      url: `https://dialogs.yandex.net/api/v1/skills/${dialogs_config.skill_id}/images`,
+      url: `https://dialogs.yandex.net/api/v1/skills/${process.env.YANDEX_SKILL_ID}/images`,
       headers: {
-        Authorization: `OAuth ${dialogs_config.token}`,
+        Authorization: `OAuth ${process.env.YANDEX_TOKEN}`,
       },
       formData: {
         file: {

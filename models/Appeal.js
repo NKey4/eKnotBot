@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const AppealsSchema = new mongoose.Schema(
+const AppealSchema = new mongoose.Schema(
   {
     answer: { type: String, required: true },
     user: {
@@ -10,8 +10,11 @@ const AppealsSchema = new mongoose.Schema(
     },
   },
   {
+    versionKey: false,
+  },
+  {
     timestamps: true,
   }
 );
 
-export default mongoose.model("Appeals", AppealsSchema);
+export default mongoose.model("Appeal", AppealSchema);

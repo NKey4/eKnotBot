@@ -1,4 +1,3 @@
-import { ContextsClient } from "@google-cloud/dialogflow";
 import ApplicationModel from "../models/Application.js";
 import {
   STATUS,
@@ -6,7 +5,6 @@ import {
   requestLocationId,
 } from "../constants/constants.js";
 import CounterModel from "../models/Counter.js";
-import { struct } from "pb-util";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -16,80 +14,56 @@ export const create_applications_accept = async (
   yandex_id,
   user_id
 ) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
-  const contextsClient = new ContextsClient({
-    credentials: { private_key, client_email },
-  });
-
   try {
-    console.log(queryResult.outputContexts);
-    let context = queryResult.outputContexts[2].parameters;
-    const number = context.number;
-    if (!context.description) {
-      context.description = context["worktype.original"];
-    }
-    const status_id = STATUS.find((item) => item.key === "1")?.oid;
-    const RequestLocationId = requestLocationId.find(
-      (item) => item.predName === context.location
-    )?.oid;
-    const locationStandartName = requestLocationId.find(
-      (item) => item.predName === context.location
-    )?.Name;
-    const RequestCategoryId = requestCategoryId.find(
-      (item) => item.Name === context.worktype
-    )?.oid;
-    let counter = await CounterModel.findOneAndUpdate(
-      { id: "autoval" },
-      { $inc: { seq: 1 } },
-      { new: true, upsert: true }
-    );
+    const context = queryResult.outputContexts[2].parameters;
+    const {
+      number,
+      description = context["worktype.original"],
+      addresses,
+      location,
+      worktype,
+    } = context;
 
-    let seqId;
-    if (!counter) {
-      const newval = new CounterModel({ id: "autoval", seq: 1 });
-      await newval.save();
-      seqId = 1;
-    } else {
-      seqId = counter.seq;
-    }
+    const RequestLocationId = requestLocationId.find(
+      (item) => item.predName === location
+    )?.oid;
+    const RequestCategoryId = requestCategoryId.find(
+      (item) => item.Name === worktype
+    )?.oid;
+    const seqId = (
+      await CounterModel.findOneAndUpdate(
+        { id: "autoval" },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+      )
+    ).seq;
+    const address = addresses[number - 1];
 
     const applicationToSend = {
       id: seqId,
       user: user_id,
-      address: context.addresses[number - 1]._id,
+      address: address._id,
       requestLocationId: RequestLocationId,
       requestCategoryId: RequestCategoryId,
-      requestSubCategoryId: "65112d8b4db28605ac132b67",
-      dataMessage: `Заявка по адресу: ${context.addresses[number - 1].city}, ${
-        context.addresses[number - 1].street
-      }\n\t• местонахождение - ${locationStandartName}\n\t• тип работ - ${
-        context.worktype
-      }`,
-      userMessage: context.description,
+      requestSubCategoryId: context["worktype.original"],
+      dataMessage: `Заявка по адресу: ${address.city}, ${address.street}\n\t• местонахождение - ${location}\n\t• тип работ - ${worktype}`,
+      userMessage: description,
       status_id: "660087e06c58241f9b026704",
     };
-    console.log(applicationToSend);
-    if (
-      applicationToSend.user === undefined ||
-      applicationToSend.address === undefined ||
-      applicationToSend.requestLocationId === undefined ||
-      applicationToSend.requestCategoryId === undefined
-    ) {
-      return res.send({
-        fulfillmentText: "Ошибка создания заявки, повторите позднее.",
-      });
-    } else {
-      res.send({
-        fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
-      });
-      const newApplication = new ApplicationModel(applicationToSend);
-      await newApplication.save();
-    }
-  } catch (error) {
-    res.send({
-      fulfillmentText: "Дом ни к какой организации не прикреплён",
-    });
 
+    if (Object.values(applicationToSend).some((value) => value === undefined)) {
+      throw new Error("Некоторые обязательные поля не определены");
+    }
+
+    await new ApplicationModel(applicationToSend).save();
+    res.send({
+      fulfillmentText: `Ваша заявка отправлена!\n Для того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
+    });
+  } catch (error) {
     console.error("Ошибка:", error);
+    res.send({
+      fulfillmentText:
+        "Произошла ошибка при создании заявки. Пожалуйста, попробуйте снова позже.",
+    });
   }
 };

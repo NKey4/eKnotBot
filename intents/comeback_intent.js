@@ -16,7 +16,6 @@ export const comeback_intent = async (res, queryResult, yandex_id) => {
 
   try {
     const user = await User.findOne({ yandex_id }).populate("addresses");
-    console.log(user);
     const addresses = user.addresses.map((address) => address.toObject());
     const parameters = {
       addresses: addresses.map(({ _id, city, street }) => ({

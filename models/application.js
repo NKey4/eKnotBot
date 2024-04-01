@@ -13,27 +13,29 @@ const ApplicationSchema = new mongoose.Schema(
     },
     requestLocationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      ref: "Location",
       required: true,
     },
     requestCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      ref: "Category",
       required: true,
     },
     requestSubCategoryId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      type: String,
       required: true,
     },
     status_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
+      ref: "Status",
       required: true,
     },
     address: { type: mongoose.Schema.Types.ObjectId, ref: "Address" },
     dataMessage: String,
     userMessage: String,
+  },
+  {
+    timestamps: true,
   },
   {
     versionKey: false,

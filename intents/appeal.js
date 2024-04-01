@@ -1,11 +1,8 @@
-import dialogflow from "@google-cloud/dialogflow";
 import OpenAI from "openai";
-import AppealsModel from "../models/Appeals.js";
+import AppealsModel from "../models/Appeal.js";
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const { ContextsClient } = dialogflow.v2beta1;
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const ASSISTANT_ID = process.env.ASSISTANT_ID;
 
@@ -28,12 +25,12 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
     });
     res.send({
       fulfillmentText:
-        "Ответ юридического консультанта обработается в течении минуты. Ответ вы можете отследить на сайте Sensata-service",
+        'Ответ юридического консультанта обработается в течении минуты. Ответ вы можете отследить на сайте Sensata-service или сказав "Последнее обращение"',
     });
     let messages;
     let answer;
     do {
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Check every 5 seconds
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       messages = await openai.beta.threads.messages.list(run.thread_id);
       const message = messages.data.find(
         (msg) =>
@@ -41,6 +38,7 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
       );
       if (message) {
         answer = message.content[0].text.value;
+        console.log(answer);
       }
     } while (!answer);
 
