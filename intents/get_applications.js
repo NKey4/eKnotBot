@@ -1,4 +1,4 @@
-import Application from "../models/application.js";
+import Application from "../models/temp.js";
 import { STATUS } from "../constants/constants.js";
 import dotenv from "dotenv";
 dotenv.config();
