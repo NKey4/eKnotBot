@@ -11,7 +11,9 @@ export const get_specific_application = async (res, queryResult, yandex_id) => {
     const application = await Application.find({ yandexId: yandex_id });
 
     if (!application || application.length === 0) {
-      return res.sendStatus(404);
+      return res.send({
+        fulfillmentText: "Заявки не найдены",
+      });
     }
 
     let appResult = null;
@@ -31,7 +33,9 @@ export const get_specific_application = async (res, queryResult, yandex_id) => {
     }
 
     if (!appResult) {
-      return res.sendStatus(400);
+      return res.send({
+        fulfillmentText: "Заявки не найдены",
+      });
     }
 
     const statusValue = STATUS.find(

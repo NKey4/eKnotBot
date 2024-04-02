@@ -56,7 +56,19 @@ aliceRouter.post("/", async (req, res) => {
       intentResponse = await detectIntent(request.command, yandex_id);
       jsonAnswer.response = { text: intentResponse.fulfillmentText };
       if (intentResponse.intentDisplayName === "Exit") {
-        jsonAnswer.response.end_session = true;
+        jsonAnswer.user_state_update = { fullName: null };
+        jsonAnswer.response = {
+          text: (await detectIntent("Привет", yandex_id)).fulfillmentText,
+          card: {
+            type: "BigImage",
+            image_id: "1533899/4ac3620447eeaa50946a",
+            title: "Клик",
+            button: {
+              title: "e-Knot",
+              url: link,
+            },
+          },
+        };
       } else if (
         intentResponse.intentDisplayName === "check_user_yes_code" &&
         intentResponse.webhookStatus.code === 0
@@ -76,7 +88,9 @@ aliceRouter.post("/", async (req, res) => {
     res.json(jsonAnswer);
   } catch (error) {
     console.error(error);
-    res.sendStatus(500);
+    res.send({
+      fulfillmentText: "Ошибка сервера",
+    });
   }
 });
 

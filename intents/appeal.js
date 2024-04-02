@@ -71,7 +71,9 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
     });
     await newAppeal.save();
   } catch (error) {
-    console.error("Server error (appeal):", error);
-    res.sendStatus(500);
+    console.error("Ошибка сервера (appeal):", error);
+    res.send({
+      fulfillmentText: "Ошибка сервера",
+    });
   }
 };

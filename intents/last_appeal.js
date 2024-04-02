@@ -8,7 +8,7 @@ export const last_appeal = async (res, queryResult, yandex_id, user_id) => {
       _id: -1,
     });
     if (appeal) {
-      res.send({
+      return res.send({
         fulfillmentText: appeal.answer,
       });
     } else {
@@ -17,7 +17,9 @@ export const last_appeal = async (res, queryResult, yandex_id, user_id) => {
       });
     }
   } catch (error) {
-    console.error("Server error (appeal):", error);
-    res.sendStatus(500);
+    console.error("Ошибка сервера (last_appeal):", error);
+    res.send({
+      fulfillmentText: "Ошибка сервера",
+    });
   }
 };

@@ -39,6 +39,8 @@ export const comeback_intent = async (res, queryResult, yandex_id) => {
     });
   } catch (error) {
     console.error("Server error (comeback_intent):", error);
-    return res.sendStatus(500);
+    res.send({
+      fulfillmentText: "Ошибка сервера",
+    });
   }
 };

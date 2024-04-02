@@ -9,7 +9,9 @@ export const delete_applications = async (res, queryResult, yandex_id) => {
     const app = await Application.findOne({ yandexId: yandex_id });
 
     if (!app) {
-      return res.sendStatus(400);
+      return res.send({
+        fulfillmentText: "Ошибка сервера",
+      });
     }
 
     let digitsOnly = numberApp.replace(/\D/g, "");

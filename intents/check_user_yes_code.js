@@ -49,6 +49,8 @@ export const check_user_yes_code = async (res, queryResult, yandex_id) => {
     });
   } catch (error) {
     console.error("Server error (check_user_yes_code):", error);
-    return res.sendStatus(500);
+    res.send({
+      fulfillmentText: "Ошибка сервера",
+    });
   }
 };
