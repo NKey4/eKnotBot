@@ -22,7 +22,7 @@ export const check_user_yes_code = async (res, queryResult, yandex_id) => {
     }).populate("addresses");
 
     if (user.aliceCode === digitsOnly) {
-      user.yandexId = yandex_id;
+      user.yandex_id = yandex_id;
       user.aliceCode = undefined;
       await user.save();
     }
