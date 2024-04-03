@@ -6,6 +6,7 @@ export { check_user_yes_code } from "./check_user_yes_code.js";
 export { comeback_intent } from "./comeback_intent.js";
 export { delete_applications } from "./delete_applications.js";
 export { appeal } from "./appeal.js";
+export { Exit } from "./Exit.js";
 export { last_appeal } from "./last_appeal.js";
 export { get_applications } from "./get_applications.js";
 export { get_one_application } from "./get_one_application.js";
