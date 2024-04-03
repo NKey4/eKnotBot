@@ -33,6 +33,7 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
     do {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       messages = await openai.beta.threads.messages.list(run.thread_id);
+      console.log(messages.data);
       const userMessage = messages.data.find(
         (msg) => msg.role === "user" && msg.content && msg.content.length > 0
       );
@@ -57,12 +58,7 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
       ) {
         answer = assistantMessage.content[0].text.value;
       }
-      if (message) {
-        answer = message.content[0].text.value;
-        question = message.content[1].text.value;
-        console.log(answer);
-      }
-    } while (!answer && !question);
+    } while (!answer || !question);
 
     const newAppeal = new AppealsModel({
       question,

@@ -1,5 +1,5 @@
 import dialogflow from "@google-cloud/dialogflow";
-import detectIntent from "../df.js";
+
 import { struct } from "pb-util";
 import dotenv from "dotenv";
 dotenv.config();
