@@ -2,9 +2,9 @@
   "name": "alicebot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node main.js"
+    "start": "nodemon main.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,8 +13,11 @@
     "axios": "^1.4.0",
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
-    "firebase-admin": "^11.9.0",
     "jimp": "^0.22.8",
-    "yandex-dialogs-sdk": "^2.3.0"
+    "mongoose": "^7.5.0",
+    "pb-util": "^1.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

@@ -1,4 +1,4 @@
-const dialogflow = require("@google-cloud/dialogflow");
+const dialogflow = require("@google-cloud/dialogflow").v2;
 require("dotenv").config();
 
 const { project_id, private_key, client_email } = JSON.parse(
@@ -14,7 +14,6 @@ const detectIntent = async (queryText, user_id) => {
     project_id,
     user_id
   );
-
   const request = {
     session: sessionPath,
     queryInput: {
@@ -26,7 +25,12 @@ const detectIntent = async (queryText, user_id) => {
   };
 
   const [response] = await sessionClient.detectIntent(request);
-  return response.queryResult.fulfillmentText;
+  return {
+    fulfillmentText: response.queryResult.fulfillmentText,
+    intentDisplayName: response.queryResult.intent.displayName,
+    context: response.queryResult.outputContexts,
+    webhookStatus: response.webhookStatus,
+  };
 };
 
 module.exports = detectIntent;

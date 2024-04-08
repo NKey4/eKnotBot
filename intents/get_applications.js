@@ -1,31 +1,33 @@
-const { db } = require("../firebase");
+const Application = require("../models/application");
 const { STATUS } = require("../constants/constants");
+require("dotenv").config();
 
 const get_applications = async (res, queryResult, user_id) => {
-  const appRef = db.collection("applications").doc(user_id);
-  const result = await appRef.get();
+  try {
+    const applications = await Application.find({ yandexId: user_id });
 
-  if (!result.exists) {
-    return res.sendStatus(400);
+    if (!applications || applications.length === 0) {
+      return res.status(404).send("Заявки не найдены")
+    }
+
+    const counts = {};
+    applications.forEach((app) => {
+      const count = counts[app.status_id] || 0;
+      counts[app.status_id] = count + 1;
+    });
+
+    const countText = Object.entries(counts)
+      .map(([status_id, count]) => {
+        const statusLabel = STATUS.find((item) => item.oid === status_id)?.Name;
+        return `Количество заявок со статусом "${statusLabel}": ${count}`;
+      })
+      .join("\n");
+
+    res.send({ fulfillmentText: countText });
+  } catch (error) {
+    console.error("Ошибка при получении данных заявок из базы данных:", error);
+    res.send({ fulfillmentText: "Приношу извинения. Ошибка сервера." });
   }
-
-  const applications = result.data();
-  const counts = {};
-  Object.values(applications).forEach((value) => {
-    const count = counts[value.status] || 0;
-    counts[value.status] = count + 1;
-  });
-
-  const countText = Object.entries(counts)
-    .map(
-      ([status, count]) =>
-        `Количество заявок со статусом "${
-          STATUS.find((item) => item.key === status)?.value
-        }": ${count}`
-    )
-    .join("\n");
-
-  res.send({ fulfillmentText: countText });
 };
 
 module.exports = get_applications;
