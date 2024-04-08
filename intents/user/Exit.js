@@ -1,10 +1,10 @@
-import UserModel from "../models/User.js";
+import UserModel from "../../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 export const Exit = async (res, queryResult, yandex_id, user_id) => {
   try {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       yandex_id,
     });
 

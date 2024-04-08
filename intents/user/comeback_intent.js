@@ -1,7 +1,7 @@
 import dialogflow from "@google-cloud/dialogflow";
 const { ContextsClient } = dialogflow.v2beta1;
 import { struct } from "pb-util";
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import dotenv from "dotenv";
 dotenv.config();
 

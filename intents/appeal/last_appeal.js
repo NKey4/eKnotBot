@@ -1,4 +1,4 @@
-import AppealsModel from "../models/Appeal.js";
+import AppealsModel from "../../models/Appeal.js";
 import dotenv from "dotenv";
 dotenv.config();
 

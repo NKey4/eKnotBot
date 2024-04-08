@@ -1,7 +1,10 @@
 import { ContextsClient } from "@google-cloud/dialogflow";
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import { struct } from "pb-util";
-import { format_number_to_770, format_code } from "../intents/format_number.js";
+import {
+  format_number_to_770,
+  format_code,
+} from "../../utils/format_number.js";
 import dotenv from "dotenv";
 dotenv.config();
 
