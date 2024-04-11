@@ -35,17 +35,17 @@ export const create_applications_Confirm = async (
   const addressIndex =
     user.addresses.length > 1 ? Number(context.numberFlat - 1) : 0;
   const userAddress = user.addresses[addressIndex];
-  const [streetName, flatNumber] = String(userAddress.street).split(", ");
+
   context["worktype.original"] = context["worktype.original"].toLowerCase();
 
-  const addressText = `город ${userAddress.city}, улица ${streetName}, квартира ${flatNumber}`;
+  const addressText = `город ${userAddress.city}, улица ${userAddress.street}, квартира ${userAddress.flat}`;
   const detailsText =
     queryResult.outputContexts[0] &&
     queryResult.outputContexts[0].parameters &&
     queryResult.outputContexts[0].parameters.description
-      ? `Подробности: ${queryResult.outputContexts[0].parameters.description}.`
+      ? ` Подробности: ${queryResult.outputContexts[0].parameters.description}.`
       : "";
-  const message = `Желаете подать заявку, что у Вас ${context["location.original"]} ${context["worktype.original"]}. ${detailsText} Адрес: ${addressText}. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`;
+  const message = `Желаете подать заявку, что у Вас ${context["location.original"]} ${context["worktype.original"]}.${detailsText} Адрес: ${addressText}. Подтвердите, пожалуйста.\nПри неточностях, опишите заново.`;
 
   res.send({ fulfillmentText: message });
 };

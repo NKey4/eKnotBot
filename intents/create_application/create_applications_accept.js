@@ -60,7 +60,6 @@ export const create_applications_accept = async (
         ? Math.max(0, context.numberFlat.numberValue - 1)
         : 0;
     const selectedAddress = user.addresses[addressIndex];
-    const [streetName, flatNumber] = selectedAddress.street.split(", ");
 
     const seqId = (
       await CounterModel.findOneAndUpdate(
@@ -77,7 +76,7 @@ export const create_applications_accept = async (
       requestLocationId: locationInfo?.oid,
       requestCategoryId: categoryInfo?.oid,
       requestSubCategoryId: context["worktype.original"],
-      dataMessage: `Заявка по адресу: город ${selectedAddress.city}, улица ${streetName}, квартира ${flatNumber}\n\t• местонахождение - ${locationInfo?.Name};\n\t• тип работ - ${context.worktype}.`,
+      dataMessage: `Заявка по адресу: город ${selectedAddress.city}, улица ${selectedAddress.street}, квартира ${selectedAddress.flat}\n\t• местонахождение - ${locationInfo?.Name};\n\t• тип работ - ${context.worktype}.`,
       userMessage: `${description}.`,
       status_id,
     };
@@ -88,7 +87,7 @@ export const create_applications_accept = async (
 
     await new ApplicationModel(applicationToSend).save();
     res.send({
-      fulfillmentText: `Ваша заявка отправлена!\nДля того чтобы узнать номер заявки напишите или произнесите "Покажи статус последней заявки".`,
+      fulfillmentText: `Ваша заявка отправлена!\nВы можете следить за процессом исполнения вашей заявки в приложении.`,
     });
 
     contextsClient.updateContext({

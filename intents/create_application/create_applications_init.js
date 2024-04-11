@@ -21,10 +21,10 @@ export const create_applications_init = async (
     const user = await UserModel.findOne({ yandex_id })
       .populate("addresses")
       .exec();
-    console.log(user);
     if (!user || !user.addresses.length) {
-      console.error("Пользователь или адреса не найдены");
-      return res.sendStatus(404);
+      return res.send({
+        fulfillmentText: "Пользователь ни к одной организации не прикреплен",
+      });
     }
 
     let message = "";
