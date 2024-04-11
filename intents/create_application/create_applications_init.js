@@ -11,7 +11,9 @@ export const create_applications_init = async (
   yandex_id,
   user_id
 ) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+  const { private_key, client_email, project_id } = JSON.parse(
+    process.env.CREDENTIALS
+  );
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
@@ -45,11 +47,10 @@ export const create_applications_init = async (
       contextName = "defAddress";
     }
 
-    // Создание контекста в Dialogflow
     contextsClient.createContext({
-      parent: `projects/eknot-ktdq/agent/sessions/${yandex_id}`,
+      parent: `projects/${project_id}/agent/sessions/${yandex_id}`,
       context: {
-        name: `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/${contextName}`,
+        name: `projects/${project_id}/agent/sessions/${yandex_id}/contexts/${contextName}`,
         lifespanCount: 1,
       },
     });

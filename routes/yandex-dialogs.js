@@ -7,8 +7,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const aliceRouter = express.Router();
+const { private_key, client_email, project_id } = JSON.parse(
+  process.env.CREDENTIALS
+);
+
 const dialogflowClient = new ContextsClient({
-  credentials: JSON.parse(process.env.CREDENTIALS),
+  credentials: { private_key, client_email },
 });
 
 aliceRouter.post("/", async (req, res) => {
@@ -73,7 +77,7 @@ aliceRouter.post("/", async (req, res) => {
         intentResponse.intentDisplayName === "check_user_yes_code" &&
         intentResponse.webhookStatus.code === 0
       ) {
-        const contextToFind = `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`;
+        const contextToFind = `projects/${project_id}/agent/sessions/${yandex_id}/contexts/logincheck`;
         const request = {
           name: contextToFind,
         };

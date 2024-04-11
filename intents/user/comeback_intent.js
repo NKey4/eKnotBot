@@ -26,9 +26,9 @@ export const comeback_intent = async (res, queryResult, yandex_id) => {
     };
 
     contextsClient.createContext({
-      parent: `projects/eknot-ktdq/agent/sessions/${yandex_id}`,
+      parent: `projects/${project_id}/agent/sessions/${yandex_id}`,
       context: {
-        name: `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`,
+        name: `projects/${project_id}/agent/sessions/${yandex_id}/contexts/logincheck`,
         parameters: struct.encode(parameters),
         lifespanCount: 50,
       },

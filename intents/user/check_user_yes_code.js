@@ -9,7 +9,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const check_user_yes_code = async (res, queryResult, yandex_id) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+  const { private_key, client_email, project_id } = JSON.parse(
+    process.env.CREDENTIALS
+  );
 
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
@@ -37,9 +39,9 @@ export const check_user_yes_code = async (res, queryResult, yandex_id) => {
     };
 
     const request = {
-      parent: `projects/eknot-ktdq/agent/sessions/${yandex_id}`,
+      parent: `projects/${project_id}/agent/sessions/${yandex_id}`,
       context: {
-        name: `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`,
+        name: `projects/${project_id}/agent/sessions/${yandex_id}/contexts/logincheck`,
         parameters: struct.encode(parameters),
         lifespanCount: 50,
       },

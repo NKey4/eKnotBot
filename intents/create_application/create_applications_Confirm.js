@@ -13,12 +13,14 @@ export const create_applications_Confirm = async (
   yandex_id,
   user_id
 ) => {
-  const { private_key, client_email } = JSON.parse(process.env.CREDENTIALS);
+  const { private_key, client_email, project_id } = JSON.parse(
+    process.env.CREDENTIALS
+  );
   const contextsClient = new ContextsClient({
     credentials: { private_key, client_email },
   });
   const response = await contextsClient.getContext({
-    name: `projects/eknot-ktdq/agent/sessions/${yandex_id}/contexts/logincheck`,
+    name: `projects/${project_id}/agent/sessions/${yandex_id}/contexts/logincheck`,
   });
 
   let context = struct.decode(response[0].parameters);
