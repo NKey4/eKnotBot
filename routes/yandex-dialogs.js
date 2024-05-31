@@ -27,9 +27,9 @@ aliceRouter.post("/", async (req, res) => {
 
     if (userAgent.includes("Apple")) {
       link =
-        "https://apps.apple.com/kz/app/eknot-%D1%86%D0%B8%D1%84%D1%80%D0%BE%D0%B2%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%BE%D1%81%D0%B8-%D0%B8-%D0%BF%D1%82/id1516986646";
+        "https://apps.apple.com/kz/app/sensata-service/id6465892959";
     } else {
-      link = "https://play.google.com/store/apps/details?id=me.eknot";
+      link = "https://play.google.com/store/apps/details?id=kz.eknot.sensata";
     }
 
     if (!request.command) {
@@ -47,10 +47,10 @@ aliceRouter.post("/", async (req, res) => {
           text: (await detectIntent("Привет", yandex_id)).fulfillmentText,
           card: {
             type: "BigImage",
-            image_id: "1533899/4ac3620447eeaa50946a",
+            image_id: "1533899/c27c013cb3ef0bf34679",
             title: "Клик",
             button: {
-              title: "e-Knot",
+              title: "Sensata Service",
               url: link,
             },
           },
