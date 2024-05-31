@@ -47,7 +47,7 @@ aliceRouter.post("/", async (req, res) => {
           text: (await detectIntent("Привет", yandex_id)).fulfillmentText,
           card: {
             type: "BigImage",
-            image_id: "1533899/11bc7957311d0a1828d5",
+            image_id: "1030494/207c3acea0a909e213b6",
             title: "Клик",
             button: {
               title: "Sensata Service",
