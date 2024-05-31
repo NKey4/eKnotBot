@@ -25,7 +25,7 @@ export const appeal = async (res, queryResult, yandex_id, user_id) => {
     });
     res.send({
       fulfillmentText:
-        'Ответ юридического консультанта обработается в течении минуты. Ответ вы можете отследить на сайте Sensata-service или сказав "Последнее обращение"',
+        'Ответ юридического консультанта обработается в течении минуты. Ответ вы можете отследить на сайте Sensata Service или сказав "Последнее обращение"',
     });
     let messages;
     let answer;
